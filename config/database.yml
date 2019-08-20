@@ -50,5 +50,5 @@ test:
 production:
   <<: *default
   database: tech_visual_production
-  username: tech_visual
-  password: <%= ENV['TECH_VISUAL_DATABASE_PASSWORD'] %>
+  username: root
+  password: <%= ENV['DATABASE_PASSWORD'] %>
