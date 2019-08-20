@@ -39,6 +39,20 @@ gem 'bootsnap', '>= 1.1.0', require: false
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'pry-rails'
+  # Step execution the pry becomes possible
+  gem 'pry-byebug'
+  gem 'rspec-rails'
+  gem 'rails-controller-testing'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'capistrano', '>= 3.11.0'
+  gem 'capistrano-rbenv', '>= 2.1.4'
+  gem 'capistrano-bundler', '>= 1.5.0'
+  gem 'capistrano-rails', '>= 1.4.0'
+  gem 'capistrano3-unicorn', '>= 0.2.1'
+  # Discover N+1 to easy
+  gem 'bullet', '>= 6.0.0'
 end
 
 group :development do
@@ -56,6 +70,12 @@ group :test do
   gem 'selenium-webdriver'
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
+end
+
+group :production do
+  gem 'unicorn', '5.5.1'
+  # Needed S3 access with IAM role
+  gem "aws-sdk-s3"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
