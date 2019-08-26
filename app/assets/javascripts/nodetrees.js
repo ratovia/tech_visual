@@ -88,6 +88,8 @@ $(function(){
   const answerTree = new NodeTree(answer);
   // そのまま渡すと参照が渡されるので$.extendでコピーを作成する
   let userTree = new NodeTree($.extend(true, {}, userSheet));
+  console.log(answer.branches)
+  console.log(userTree.branches)
 
   // 各メソッドの動作確認用
   // console.log(userTree)
@@ -104,16 +106,19 @@ $(function(){
   $('.js-correct').on('click',()=>{
     userTree.addCommit('b2', 'add methods for Nodetree')
     NodeTree.judgeAnswer(userTree, answerTree);
+    console.log(userTree.branches)
   })
   // 不正解
   $('.js-incorrect').on('click', ()=>{
     userTree.addCommit('b1', 'add methods for Nodetree')
     NodeTree.judgeAnswer(userTree, answerTree);
+    console.log(userTree.branches)
   })
 
   // 元に戻す
   $('.js-undo').on('click', ()=>{
     userTree = new NodeTree($.extend(true, {}, userSheet));
     console.log('解答をリセットしました');
+    console.log(userTree.branches)
   })
 })
