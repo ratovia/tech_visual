@@ -1,10 +1,11 @@
-$(()=>{
-  class NodeTree {
+$(function(){
+  const NodeTree = class {
     constructor(nodeTree) {
       this.branches = nodeTree.branches;
     }
 
     static judgeAnswer(userNodes, sampleNodes) {
+      // 同じ値でも違うオブジェクトだと == 比較ができないので文字列化して比較する
       const user = JSON.stringify(userNodes);
       const sample = JSON.stringify(sampleNodes);
       if (user == sample) {
@@ -40,6 +41,7 @@ $(()=>{
     }
   }
 
+  // TODO ページ読み込み時にDBから取得してJSONで送ってくる
   const answer = {
     branches: [
       {
@@ -48,7 +50,7 @@ $(()=>{
           { message: 'add NodeTree model' },
           { message: 'add Branch model' },
           { message: 'add Commit model' },
-        ]
+        ],
       },
       {
         name: 'b2',
@@ -56,16 +58,13 @@ $(()=>{
           { message: 'add ajax function' },
           { message: 'add NodeTree class' },
           { message: 'add methods for Nodetree' },
-        ]
-      }
+        ],
+      },
     ]
   }
 
-  // TODO ページ読み込み時にDBから取得してJSONで送ってくる
-  const answer_tree = new NodeTree(answer);
-
   // TODO ページ読み込み時にユーザー用のNodeTreeを作成してJSONで送ってくる
-  let user_tree = new NodeTree({
+  const userSheet = {
     branches: [
       {
         name: 'b1',
@@ -73,7 +72,7 @@ $(()=>{
           { message: 'add NodeTree model' },
           { message: 'add Branch model' },
           { message: 'add Commit model' },
-        ]
+        ],
       },
       {
         name: 'b2',
@@ -81,24 +80,40 @@ $(()=>{
           // 解答よりコミットが1つ少ない状態
           { message: 'add ajax function' },
           { message: 'add NodeTree class' },
-        ]
-      }
+        ],
+      },
     ]
-  });
+  }
+
+  const answerTree = new NodeTree(answer);
+  // そのまま渡すと参照が渡されるので$.extendでコピーを作成する
+  let userTree = new NodeTree($.extend(true, {}, userSheet));
 
   // 各メソッドの動作確認用
-  // console.log(answer_tree.branches)
-  // console.log(answer_tree.getBranch('b1'))
-  // console.log(answer_tree.getCommit('b1', 'add Branch model'))
-  // console.log(answer_tree.addBranch(3, 'b3'))
-  // console.log(answer_tree.addCommit('b3','add NodeTree class'))
-  // console.log(answer_tree.branches)
+  // console.log(userTree)
+  // console.log(userSheet)
+  // console.log(userTree.getBranch('b1'))
+  // console.log(userTree.getCommit('b1', 'add Branch model'))
+  // userTree.addBranch('b3')
+  // userTree.addCommit('b2','TEST')
+  // console.log(userTree)
+  // console.log(userSheet)
 
   // 正誤判定メソッドの動作確認用
   // 正解
-  user_tree.addCommit('b2', 'add methods for Nodetree')
+  $('.js-correct').on('click',()=>{
+    userTree.addCommit('b2', 'add methods for Nodetree')
+    NodeTree.judgeAnswer(userTree, answerTree);
+  })
   // 不正解
-  // user_tree.addCommits('b1', 'add methods for Nodetree')
+  $('.js-incorrect').on('click', ()=>{
+    userTree.addCommit('b1', 'add methods for Nodetree')
+    NodeTree.judgeAnswer(userTree, answerTree);
+  })
 
-  NodeTree.judgeAnswer(user_tree, answer_tree);
+  // 元に戻す
+  $('.js-undo').on('click', ()=>{
+    userTree = new NodeTree($.extend(true, {}, userSheet));
+    alert('解答をリセットしました');
+  })
 })
