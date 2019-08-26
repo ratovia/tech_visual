@@ -1,5 +1,5 @@
 $(function(){
-  const NodeTree = class {
+  class NodeTree {
     constructor(nodeTree) {
       this.branches = nodeTree.branches;
     }
@@ -9,9 +9,9 @@ $(function(){
       const user = JSON.stringify(userNodes);
       const sample = JSON.stringify(sampleNodes);
       if (user == sample) {
-        alert('正解！');
+        console.log('正解！');
       } else {
-        alert('のびしろですねぇ');
+        console.log('のびしろですねぇ');
       }
     }
 
@@ -114,6 +114,6 @@ $(function(){
   // 元に戻す
   $('.js-undo').on('click', ()=>{
     userTree = new NodeTree($.extend(true, {}, userSheet));
-    alert('解答をリセットしました');
+    console.log('解答をリセットしました');
   })
 })
