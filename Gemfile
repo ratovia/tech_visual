@@ -42,7 +42,6 @@ group :development, :test do
   # Step execution the pry becomes possible
   gem 'pry-byebug'
   gem 'rspec-rails'
-  gem 'rails-controller-testing'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'capistrano', '>= 3.11.0'
