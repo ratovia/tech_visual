@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root "git_lessons#show"
   resources :node_trees
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  resources :git_lessons, only: :show
 end
