@@ -1,0 +1,30 @@
+// git_lessons/show画面のレイアウトのみ
+.git-lessons-show{
+  background-color: $blue;
+  padding: 20px;
+  .main-nodetree-area{
+    height: 67%;
+    width: 100%;
+    border: solid $light-gray;
+    border-width: $bw $bw 0px;
+  }
+  .quiz-select-area{
+    height: 25%;
+    width: 100%;
+    border: solid $light-gray;
+    border-width: $bw $bw 0px;
+  }
+  .under-guide-area{
+    height: 8%;
+    width: 100%;
+    border: $bw solid $light-gray;
+    display: flex;
+    .lesson-information{
+      border-right: $bw solid $light-gray;
+      width: 40%;
+    }
+    .lesson-message-area{
+      width: 60%;
+    }
+  }
+}
