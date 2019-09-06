@@ -1,0 +1,12 @@
+// custom reset scss
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// common style
+.wrapper{
+  width: 100vw;
+  height: 100vh;  
+}
