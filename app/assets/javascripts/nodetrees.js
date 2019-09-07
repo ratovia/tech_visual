@@ -39,6 +39,12 @@ $(function(){
         message: message,
       });
     }
+
+    rebaseBranch(branch1, branch2) {
+      const b1 = this.getBranch(branch1);
+      const b2 = this.getBranch(branch2);
+      b1.commits = b1.commits.concat(b2.commits);
+    }
   }
 
   // TODO ページ読み込み時にDBから取得してJSONで送ってくる
@@ -100,6 +106,8 @@ $(function(){
   // userTree.addCommit('b2','TEST')
   // console.log(userTree)
   // console.log(userSheet)
+  // userTree.rebaseBranch('b1', 'b2');
+  // console.log(userTree)
 
   // 正誤判定メソッドの動作確認用
   // 正解
