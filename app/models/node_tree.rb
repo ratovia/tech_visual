@@ -1,2 +1,0 @@
-class NodeTree < ApplicationRecord
-end
