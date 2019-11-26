@@ -1,0 +1,23 @@
+<% #カスタムフォームのサンプル %>
+<%= semantic_form_for [:admin, @work_role], builder: ActiveAdmin::FormBuilder do |f| %>
+  <fieldset class="inputs">
+    <ol>
+      <%= f.input :name %>
+    </ol>
+  </fieldset>
+
+  <fieldset class="actions">
+    <ol>
+      <li><%= f.submit "保存" %></li>
+      <li class="cancel"><%= link_to("取り消す", collection_path)%></li>
+    </ol>
+  </fieldset>
+<% end %>
+
+<% #form_withでもOK %>
+<%= form_with model: [:admin, @work_role], local: true, builder: ActiveAdmin::FormBuilder do |f| %>
+  <%= f.label :name %>
+  <%= f.text_field :name %><br>
+  <%= f.submit "保存" %>
+  <div class="cancel"><%= link_to("取り消す", collection_path)%></div>
+<% end %>
