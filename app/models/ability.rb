@@ -4,14 +4,24 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    # Define abilities for the passed in user here. For example:
-    #
-    #   user ||= User.new # guest user (not logged in)
-    #   if user.admin?
-    #     can :manage, :all
-    #   else
-    #     can :read, :all
-    #   end
+    # Define abilities for the passed in user here.
+    user ||= User.new # guest user (not logged in)
+
+    # DashBoard,Userのreadは誰でもできる
+    can :read, ActiveAdmin::Page, name: 'Dashboard'
+    can :read, User
+
+    if user.admin?
+      # admin権限は全モデルのmanageができる
+      can :manage, :all
+    end
+
+    if user.member?
+      # CheckBoxモデルをcreateできる
+      can :create, CheckBox
+      # 自分のCheckBoxモデルはmanageできる
+      can :manage, CheckBox, :all, user: user
+    end
     #
     # The first argument to `can` is the action you are giving the user
     # permission to do.
