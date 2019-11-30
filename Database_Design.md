@@ -3,12 +3,12 @@
 ### **●ユーザーテーブル**
 ログインに必要なアカウント情報を入れておく。
 
-| Column     | Type    | Options                  | memo       |
-| :--------- | :------ | :----------------------- | :--------- |
-| name       | string  | null: false              |            |
-| email      | string  | null: false,unique: true |            |
-| password   | string  | null: false              |            |
-| admin      | boolean |                          | 管理者権限   |
+| Column     | Type    | Options                  | memo                |
+| :--------- | :------ | :----------------------- | :------------------ |
+| name       | string  | null: false              |                     |
+| email      | string  | null: false,unique: true |                     |
+| password   | string  | null: false              |                     |
+| role       | integer |                          | admin: 1, member: 2 |
 
 ### **●アソシエーション**
 - has_many :shifts
