@@ -41,9 +41,13 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Step execution the pry becomes possible
   gem 'pry-byebug'
-  gem 'rspec-rails'
+  # test gems
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'rspec-rails'
+  gem 'shoulda-matchers'
+  gem 'spring-commands-rspec'
+  # automatic deploy
   gem 'capistrano', '>= 3.11.0'
   gem 'capistrano-rbenv', '>= 2.1.4'
   gem 'capistrano-bundler', '>= 1.5.0'
@@ -78,3 +82,8 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+# admin user management
+gem 'activeadmin'
+gem 'cancancan'
+gem 'devise'
