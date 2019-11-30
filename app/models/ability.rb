@@ -17,10 +17,10 @@ class Ability
     end
 
     if user.member?
-      # CheckBoxモデルをcreateできる
-      can :create, CheckBox
-      # 自分のCheckBoxモデルはmanageできる
-      can :manage, CheckBox, :all, user: user
+      # CheckBoxモデルをcreateできない
+      # can :create, CheckBox
+      # 自分のCheckBoxモデルはupdateできる
+      can :update, CheckBox, user: user
     end
     #
     # The first argument to `can` is the action you are giving the user
