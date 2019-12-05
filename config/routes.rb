@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
   root 'shifts#index'
-  get 'admin' => 'users#show'
+  get 'users/:id' => 'users#show'
 end
