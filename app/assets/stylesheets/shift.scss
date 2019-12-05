@@ -1,0 +1,23 @@
+.table {
+  border: 1px solid;
+  border-bottom: none;
+  .date-axis {
+    display: flex;
+    border-bottom: 1px solid;
+    @include cell()
+  }
+  .name-axis {
+    display: flex;
+    border-bottom: 1px solid;
+    @include cell();
+    .worktime {
+      width: calc(100% - (100% / 13));
+      display: flex;
+      .worktime-cell {
+        width: calc(100% / 12);
+        height: 20px;
+        background: blue;
+      }
+    }
+  }
+}
