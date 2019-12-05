@@ -1,0 +1,7 @@
+@mixin cell() {
+  .cell {
+    border-right: 1px solid;
+    width: calc(100% / 13);
+  }
+}
+
