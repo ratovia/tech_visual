@@ -8,7 +8,7 @@
 | name       | string  | null: false              |                     |
 | email      | string  | null: false,unique: true |                     |
 | password   | string  | null: false              |                     |
-| role       | integer |                          | admin: 1, member: 2 |
+| role       | integer |                          | admin: 1, employee: 2, part_timer: 3 |
 
 ### **●アソシエーション**
 - has_many :shifts
