@@ -1,0 +1,2 @@
+class RequiredResource < ApplicationRecord
+end
