@@ -9,12 +9,19 @@ class ShiftGenerator
     @shift_sum = [ 0 ] * DATE_TIME
   end
 
-  def parseTohour(time)
-    Time.zone.parse(time).strftime("%H").to_i
+  # "2019-11-16 10:00:00" => "10"
+  def string2hour(time)
+    Time.zone.parse(time).strftime("%H")
   end
 
-  def parseTohourmin(time)
-    Time.zone.parse(time).strftime("%H:%M").to_i
+  # "2019-11-16 10:00:00" => "10:00"
+  def string2hourmin(time)
+    Time.zone.parse(time).strftime("%H:%M")
+  end
+
+  #  "Sat, 07 Dec 2019 10:00:00 UTC +00:00" => "10:00"
+  def time2hourmin(time)
+    time.strftime("%H:%M")
   end
 
   # 3人のユーザを作成する 
@@ -59,11 +66,15 @@ class ShiftGenerator
   # 出勤時間をuser[:array]に格納する。
   # TODO この処理をしなくて済むようにする or user[:array]にアタッチするのをやめる。
   def attendance_method
+    p " 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 :時刻"
     @users.each do |user|
-      user[:array] = convertPeriod(parseTohour(user[:attendance_at]), parseTohour(user[:leaving_at]))
-      p user[:array]
+      user[:array] = convertPeriod(
+        string2hour(user[:attendance_at]).to_i, 
+        string2hour(user[:leaving_at]).to_i
+      )
+      p "#{user[:array]}:#{user[:name]}の出勤時間"
     end
-    p @req
+    p "#{@req}:必要リソース"
   end
 
   # attendance_at: "2019-11-16 12:00:00",
@@ -102,16 +113,16 @@ class ShiftGenerator
         assign_user = find_assign_users(req, i)
         assign_user.each do |user|
           if user[:shift_in_at] == nil
-            user[:shift_in_at] = Time.zone.strptime((i).to_s, '%H')
-            user[:shift_out_at] = Time.zone.strptime((i+1).to_s, '%H')
+            user[:shift_in_at] = Time.zone.strptime(("#{i}:00").to_s, '%H:%M')
+            user[:shift_out_at] = Time.zone.strptime(("#{i+1}:00").to_s, '%H:%M')
           else
-            user[:shift_out_at] = Time.zone.strptime((i+1).to_s, '%H')
+            user[:shift_out_at] = Time.zone.strptime(("#{i+1}:00").to_s, '%H:%M')
           end
         end
         @shift_sum[i] += assign_user.length 
       end
     end
-    p @shift_sum 
+    p "#{@shift_sum}:合計リソース" 
   end
 
   # 各ユーザのシフトを表示する。
@@ -120,9 +131,9 @@ class ShiftGenerator
     @users.each do |user|
       p line
       p "◇#{user[:name]}さんの出勤"
-      p "#{parseTohour(user[:attendance_at])}〜#{parseTohour(user[:leaving_at])}"
+      p "#{string2hourmin(user[:attendance_at])}〜#{string2hourmin(user[:leaving_at])}"
       p "◇#{user[:name]}さんのシフト"
-      p "#{parseTohourmin(user[:shift_in_at])}〜#{parseTohourmin(user[:shift_out_at])}"
+      p "#{time2hourmin(user[:shift_in_at])}〜#{time2hourmin(user[:shift_out_at])}"
     end
     p line
   end
