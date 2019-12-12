@@ -1,0 +1,2 @@
+shift:
+  test: <% 13.times do |num| %><% end %>
