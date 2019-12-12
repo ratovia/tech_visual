@@ -4,4 +4,10 @@
     width: calc(100% / 13);
   }
 }
-
+@mixin time-cell {
+  .time-cell {
+    width: calc(100% / 13);
+    border-right: 1px solid;
+    text-align: center;
+  }
+}
