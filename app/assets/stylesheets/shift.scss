@@ -4,7 +4,7 @@
   .date-axis {
     display: flex;
     border-bottom: 1px solid;
-    @include cell()
+    @include time-cell()
   }
   .name-axis {
     display: flex;
