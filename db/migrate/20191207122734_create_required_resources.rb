@@ -4,6 +4,7 @@ class CreateRequiredResources < ActiveRecord::Migration[5.2]
       t.integer :what_day, null: false, index: true
       t.integer :clock_at, null: false, index: true
       t.integer :count, null: false
+      t.references :work_role, null: false, foreign_key: true
       t.timestamps
     end
   end

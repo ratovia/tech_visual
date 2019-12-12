@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_26_092912) do
+ActiveRecord::Schema.define(version: 2019_12_07_122745) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "namespace"
@@ -26,6 +26,16 @@ ActiveRecord::Schema.define(version: 2019_11_26_092912) do
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
   end
 
+  create_table "attendances", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "date", null: false
+    t.integer "attendance_at", null: false
+    t.integer "leaving_at", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_attendances_on_user_id"
+  end
+
   create_table "check_boxes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.boolean "checked", default: false, null: false
@@ -33,6 +43,29 @@ ActiveRecord::Schema.define(version: 2019_11_26_092912) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_check_boxes_on_user_id"
+  end
+
+  create_table "required_resources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "what_day", null: false
+    t.integer "clock_at", null: false
+    t.integer "count", null: false
+    t.bigint "work_role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["clock_at"], name: "index_required_resources_on_clock_at"
+    t.index ["what_day"], name: "index_required_resources_on_what_day"
+    t.index ["work_role_id"], name: "index_required_resources_on_work_role_id"
+  end
+
+  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "work_role_id", null: false
+    t.bigint "user_id", null: false
+    t.timestamp "shift_in_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.timestamp "shift_out_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_shifts_on_user_id"
+    t.index ["work_role_id"], name: "index_shifts_on_work_role_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -49,5 +82,15 @@ ActiveRecord::Schema.define(version: 2019_11_26_092912) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "work_roles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "attendances", "users"
   add_foreign_key "check_boxes", "users"
+  add_foreign_key "required_resources", "work_roles"
+  add_foreign_key "shifts", "users"
+  add_foreign_key "shifts", "work_roles"
 end
