@@ -68,7 +68,7 @@ class ShiftGenerator
   def attendance_method
     p " 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 :時刻"
     @users.each do |user|
-      user[:array] = convertPeriod(
+      user[:array] = convert_attendance_to_array(
         string2hour(user[:attendance_at]).to_i, 
         string2hour(user[:leaving_at]).to_i
       )
@@ -81,7 +81,7 @@ class ShiftGenerator
   # leaving_at: "2019-11-16 22:00:00",
   # 上記フォーマットを配列に変換する。
   # [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0]
-  def convertPeriod(attend,leave)
+  def convert_attendance_to_array(attend,leave)
     array = [ 0 ] * DATE_TIME
     flag = false
     array.each_with_index do |data, i|
@@ -97,29 +97,23 @@ class ShiftGenerator
 
   # 出勤しているユーザから必要リソース人数抽出する。
   def find_assign_users(req,i)
-    assign_user = []
-    @users.each do |user|
-      if user[:array][i] == 1
-        assign_user << user
-      end
-    end
-    assign_user.sample(req) # sampleメソッドは、配列からランダムで引数の数取り出す。
+    assign_user = @users.map{|user| user if user[:array][i] == 1 }
+    assign_user.compact.sample(req) # compactメソッドは、配列からnilを削除 # sampleメソッドは、配列からランダムで引数の数取り出す。
   end
 
   # シフト生成メソッド(シフトのルールベースから生成する)
   def generate_by_rule_base
     @req.each_with_index do |req,i|
       if req > @shift_sum[i]
-        assign_user = find_assign_users(req, i)
-        assign_user.each do |user|
+        find_assign_users(req, i).map do |user|
           if user[:shift_in_at] == nil
             user[:shift_in_at] = Time.zone.strptime(("#{i}:00").to_s, '%H:%M')
             user[:shift_out_at] = Time.zone.strptime(("#{i+1}:00").to_s, '%H:%M')
           else
             user[:shift_out_at] = Time.zone.strptime(("#{i+1}:00").to_s, '%H:%M')
           end
+          @shift_sum[i] += 1 
         end
-        @shift_sum[i] += assign_user.length 
       end
     end
     p "#{@shift_sum}:合計リソース" 
