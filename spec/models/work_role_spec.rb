@@ -1,5 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe WorkRole, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { is_expected.to have_many(:required_resources) }
+  it { is_expected.to have_many(:shifts) }
+  it { is_expected.to validate_presence_of :name }
 end
