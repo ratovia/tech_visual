@@ -1,12 +1,10 @@
 class ShiftGenerator
+  # TODO　定数としてconfigに入れる
   DATE_TIME = 24
-  def initialize()
-    @users = import_user
-    # 必要リソースを定義する
-    # TODO @req(必要リソース)はテーブルからとってくる。
-    @req = [ 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1 , 1 , 2 , 2 , 2 , 2 , 2 , 2 , 3 , 2 , 2 , 1 , 0 , 0 ] #0時〜23時
-    # @sum(確定シフトの合計)
-    @shift_sum = [ 0 ] * DATE_TIME
+
+  def initialize(users,workroles)
+    @@users = users
+    @@workroles = workroles
   end
 
   # "2019-11-16 10:00:00" => "10"
@@ -24,37 +22,6 @@ class ShiftGenerator
     time.strftime("%H:%M")
   end
 
-  # 3人のユーザを作成する 
-  # 後にUserモデルからとってくる。
-  def import_user
-    @users = [
-      { 
-        id: 1,
-        name: "John",
-        attendance_at: "2019-11-16 10:00:00",
-        leaving_at: "2019-11-16 20:00:00",
-        shift_in_at: nil,
-        shift_out_at: nil
-      },
-      { 
-        id: 2,
-        name: "Kevin",
-        attendance_at: "2019-11-16 12:00:00",
-        leaving_at: "2019-11-16 22:00:00",
-        shift_in_at: nil,
-        shift_out_at: nil
-      },
-      { 
-        id: 3,
-        name: "Cacy",
-        attendance_at: "2019-11-16 18:00:00",
-        leaving_at: "2019-11-16 22:00:00",
-        shift_in_at: nil,
-        shift_out_at: nil
-      }
-    ]
-  end
-    
   # チェックテストメソッド　必要リソース == 確定シフトの合計となっていること
   def check
     DATE_TIME.times do |i| 
@@ -65,17 +32,8 @@ class ShiftGenerator
 
   # 出勤時間をuser[:attend_array]に格納する。
   # TODO この処理をしなくて済むようにする or user[:attend_array]にアタッチするのをやめる。
-  def attendance_method
-    p " 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 :時刻"
-    @users.each do |user|
-      user[:attend_array] = convert_attendance_to_array(
-        user[:id],
-        string2hour(user[:attendance_at]).to_i, 
-        string2hour(user[:leaving_at]).to_i
-      )
-      p "#{user[:attend_array][:array]}:#{user[:name]}の出勤時間"
-    end
-    p "#{@req}:必要リソース"
+  def attendance_method(day,user)
+    array = convert_attendance_to_array(user.attendances.where(day: date))
   end
 
   # attendance_at: "2019-11-16 12:00:00",
@@ -95,46 +53,60 @@ class ShiftGenerator
 
   # 出勤しているユーザから必要リソース人数抽出する。
   def find_assign_users(req,i)
-    assign_user = @users.map{|user| user if user[:attend_array][:array][i] == 1 }
+    assign_user = @@users.map{|user| user if user[:attend_array][:array][i] == 1 }
     assign_user.compact.sample(req) # compactメソッドは、配列からnilを削除 # sampleメソッドは、配列からランダムで引数の数取り出す。
   end
 
   # シフト生成メソッド(シフトのルールベースから生成する)
   def generate_by_rule_base
+    array = []
     @req.each_with_index do |req,i|
       if req > @shift_sum[i]
         find_assign_users(req, i).map do |user|
-          if user[:shift_in_at] == nil
-            user[:shift_in_at] = Time.zone.strptime(("#{i}:00").to_s, '%H:%M')
-            user[:shift_out_at] = Time.zone.strptime(("#{i+1}:00").to_s, '%H:%M')
+          hash = {user_id: user.id, workrole: }
+          if hash[:shift_in_at] == nil
+            hash[:shift_in_at] = Time.zone.strptime(("#{i}:00").to_s, '%H:%M')
+            hash[:shift_out_at] = Time.zone.strptime(("#{i+1}:00").to_s, '%H:%M')
           else
-            user[:shift_out_at] = Time.zone.strptime(("#{i+1}:00").to_s, '%H:%M')
+            hash[:shift_out_at] = Time.zone.strptime(("#{i+1}:00").to_s, '%H:%M')
           end
+          # TODO シフト合計の該当を探して1たす
           @shift_sum[i] += 1 
+          array << hash
         end
       end
     end
-    p "#{@shift_sum}:合計リソース" 
+    array
   end
 
-  # 各ユーザのシフトを表示する。
-  def display_shift
-    line = "---------------"
-    @users.each do |user|
-      p line
-      p "◇#{user[:name]}さんの出勤"
-      p "#{string2hourmin(user[:attendance_at])}〜#{string2hourmin(user[:leaving_at])}"
-      p "◇#{user[:name]}さんのシフト"
-      p "#{time2hourmin(user[:shift_in_at])}〜#{time2hourmin(user[:shift_out_at])}"
+  def sum_method(date, workrole)
+    {date: date, workrole: workrole, array: [ 0 ] * DATE_TIME}
+  end
+
+  def require_method(date, workrole)
+    array = []
+    # TODO 必要リソースのmodelからデータを取ってきて配列を作る
+    {date: date, workrole: workrole, array: array}
+  end
+
+  # シフト生成メソッド
+  # TODO 期間を受け取る
+  def generate()
+    # TODO シフト作成する期間でループする
+    date = Date.today
+    # TODO mapメソッドにする
+    @reqs = []
+    @sums = []
+    @@workroles.each do |workrole|
+      @reqs << require_method(date,workrole)
+      @sums << sum_method(date,workrole)
     end
-    p line
-  end
-
-  # ShiftGenerator.main
-  def main
-    attendance_method # 出勤時間を配列に格納する。
-    generate_by_rule_base
-    p check ? "シフト完了" : "シフト失敗"
-    display_shift
+    # TODO mapメソッドにする
+    @attendance = []
+    @@users.each do |user|
+      @attendances << attendance_method(date,user)
+    end
+    @shifts = generate_by_rule_base
+    {check: check, shift: @shifts}
   end
 end
