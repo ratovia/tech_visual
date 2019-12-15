@@ -63,16 +63,17 @@ class ShiftGenerator
     return true
   end
 
-  # 出勤時間をuser[:array]に格納する。
-  # TODO この処理をしなくて済むようにする or user[:array]にアタッチするのをやめる。
+  # 出勤時間をuser[:attend_array]に格納する。
+  # TODO この処理をしなくて済むようにする or user[:attend_array]にアタッチするのをやめる。
   def attendance_method
     p " 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23 :時刻"
     @users.each do |user|
-      user[:array] = convert_attendance_to_array(
+      user[:attend_array] = convert_attendance_to_array(
+        user[:id],
         string2hour(user[:attendance_at]).to_i, 
         string2hour(user[:leaving_at]).to_i
       )
-      p "#{user[:array]}:#{user[:name]}の出勤時間"
+      p "#{user[:attend_array][:array]}:#{user[:name]}の出勤時間"
     end
     p "#{@req}:必要リソース"
   end
@@ -81,23 +82,20 @@ class ShiftGenerator
   # leaving_at: "2019-11-16 22:00:00",
   # 上記フォーマットを配列に変換する。
   # [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0]
-  def convert_attendance_to_array(attend,leave)
+  def convert_attendance_to_array(id,attend,leave)
     array = [ 0 ] * DATE_TIME
     flag = false
     array.each_with_index do |data, i|
-      if i == attend
-        flag = true
-      elsif i == leave
-        flag = false
-      end 
+      flag = true if i == attend
+      flag = false if i == leave
       array[i] = flag ? 1 : 0
     end
-    array
+    {user_id: id, array: array}
   end
 
   # 出勤しているユーザから必要リソース人数抽出する。
   def find_assign_users(req,i)
-    assign_user = @users.map{|user| user if user[:array][i] == 1 }
+    assign_user = @users.map{|user| user if user[:attend_array][:array][i] == 1 }
     assign_user.compact.sample(req) # compactメソッドは、配列からnilを削除 # sampleメソッドは、配列からランダムで引数の数取り出す。
   end
 
