@@ -4,6 +4,7 @@ class WelcomeController < ApplicationController
     users = User.all.includes(:attendances)
     workroles = WorkRole.all
     s = ShiftGenerator.new(users,workroles)
+    # TODO  期間を渡す
     @result = s.generate()
     binding.pry
   end
