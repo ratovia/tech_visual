@@ -16,7 +16,7 @@ class Ability
       can :manage, :all
     end
 
-    if user.member?
+    if user.employee?
       # CheckBoxモデルをcreateできない
       # can :create, CheckBox
       # 自分のCheckBoxモデルはupdateできる
