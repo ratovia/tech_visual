@@ -11,10 +11,10 @@
     border-bottom: 1px solid;
     @include cell();
     .worktime {
-      width: calc(100% - (100% / 13));
+      width: $attendance-time;
       display: flex;
       .worktime-cell {
-        width: calc(100% / 12);
+        width: $attendance-time-cell;
         height: 20px;
         background: blue;
       }
