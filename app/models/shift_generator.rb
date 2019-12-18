@@ -53,7 +53,7 @@ class ShiftGenerator
   def find_assign_users(req, i, attendances)
     # TODO　mapメソッド化
     assign_user = []
-    # 他のshiftがないか確認
+    # TODO 他のshiftがないか確認
     attendances.each do |attendance|
       if attendance[:array][i] == 1
         assign_user << attendance[:user_id]
@@ -88,7 +88,7 @@ class ShiftGenerator
 
   def require_method(this_day,workrole)
     # TODO this_dayからWhat_dayをだす。
-    workrole.required_resources.where(what_day: "weekday").map { |h| h[:count] }
+    workrole.required_resources.on_(this_day).map { |h| h[:count] }
   end
 
   # シフト生成メソッド
@@ -96,7 +96,7 @@ class ShiftGenerator
   def generate
     # TODO シフト作成する期間でループする
     this_day = Date.today
-    attendances =  @@users.map{|user| attendance_method(this_day,user)}
+    attendances = @@users.map{|user| attendance_method(this_day,user)}
     @checker = true
     @@workroles.each do |workrole|
       @shifts = generate_by_rule_base(
@@ -106,6 +106,7 @@ class ShiftGenerator
         require_method(this_day,workrole), #必要リソースが
       )
     end
+    @shifts.map{|shift| shift.save}
     {check: @checker, shift: @shifts}
   end
 end
