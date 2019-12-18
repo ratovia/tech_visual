@@ -1,6 +1,6 @@
 .table
   .date-axis
-    - 13.times do |num|
+    - (Settings.shift.attendance_time + 1).times do |num|
       - if num == 0
         .time-cell
       - else
@@ -14,5 +14,6 @@
         / ユーザー名の仮置き
         user#{num + 1}
       .worktime
-        - 12.times do |num|
+        - Settings.shift.attendance_time.times do |num|
           .worktime-cell
+
