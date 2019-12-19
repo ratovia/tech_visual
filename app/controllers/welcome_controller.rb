@@ -3,7 +3,7 @@ class WelcomeController < ApplicationController
     seeding
     users = User.all.includes(:attendances)
     workroles = WorkRole.all
-    s = ShiftGenerator.new(users,workroles)
+    s = ShiftGenerator.new(users, workroles)
     # TODO  期間を渡す
     @result = s.generate()
     binding.pry
@@ -20,7 +20,7 @@ class WelcomeController < ApplicationController
       workrole = WorkRole.create(name: "事務作業")
       req = [ 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1 , 1 , 2 , 2 , 2 , 2 , 2 , 2 , 3 , 2 , 2 , 1 , 0 , 0 ] #0時〜23時
       req.each_with_index do |data, i|
-        RequiredResource.create(what_day: 1, clock_at: i, count: data ,work_role_id: workrole.id)
+        RequiredResource.create(what_day: RequiredResource.on_(Time.current), clock_at: i, count: data ,work_role_id: workrole.id)
       end
     end
 end
