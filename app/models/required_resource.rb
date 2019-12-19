@@ -19,6 +19,5 @@ class RequiredResource < ApplicationRecord
                  # 2週目の土曜は15日目と計算されてしまうため、その場合は1(次のキックオフ当日)とする
                  this_day == this_sat ? 1 : this_day.wday + dif_of_wday_what_day + 7
                end
-    where(what_day: what_day)
   end
 end
