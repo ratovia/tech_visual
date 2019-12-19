@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
   root 'shifts#index'
-  get 'users/:id' => 'users#show'
+  devise_for :users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
 end
