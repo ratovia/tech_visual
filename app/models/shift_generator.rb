@@ -6,21 +6,6 @@ class ShiftGenerator
     @@workroles = workroles
   end
 
-  # "2019-11-16 10:00:00" => "10"
-  def string2hour(time)
-    Time.zone.parse(time).strftime('%H')
-  end
-
-  # "2019-11-16 10:00:00" => "10:00"
-  def string2hourmin(time)
-    Time.zone.parse(time).strftime('%H:%M')
-  end
-
-  #  "Sat, 07 Dec 2019 10:00:00 UTC +00:00" => "10:00"
-  def time2hourmin(time)
-    time.strftime('%H:%M')
-  end
-
   # チェックテストメソッド　必要リソース == 確定シフトの合計となっていること
   def check(req, sum)
     DATE_TIME.times do |i|
@@ -29,24 +14,21 @@ class ShiftGenerator
     true
   end
 
-  def attendance_method(this_day, user)
-    array = convert_attendance_to_array(user.attendances.find_by(date: this_day))
-    { user_id: user.id, array: array }
-  end
 
   # attendance_at: "2019-11-16 12:00:00",
   # leaving_at: "2019-11-16 22:00:00",
   # 上記フォーマットを配列に変換する。
   # [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0]
-  def convert_attendance_to_array(attendance)
+  def attendance_method(this_day, user)
+    attendance = user.attendances.find_by(date: this_day)
     array = [0] * DATE_TIME
     flag = false
-    array.each_with_index do |data, i|
+    array.each_with_index do |_ary, i|
       flag = true if i == attendance[:attendance_at]
       flag = false if i == attendance[:leaving_at]
-      array[i] = flag ? 1 : 0
+      _ary = flag ? 1 : 0
     end
-    array
+    { user_id: user.id, array: array }
   end
 
   # 出勤しているユーザから必要リソース人数抽出する。
@@ -86,6 +68,7 @@ class ShiftGenerator
     shift_array
   end
 
+  # 必要リソースのデータ取得
   def require_method(this_day,workrole)
     # TODO this_dayからWhat_dayをだす。
     workrole.required_resources.where(what_day: RequiredResource.on_(this_day)).map { |h| h[:count] }  
@@ -95,7 +78,7 @@ class ShiftGenerator
   # TODO 期間を受け取る
   def generate
     # TODO シフト作成する期間でループする
-    this_day = Date.today
+    this_day = Time.current
     attendances = @@users.map { |user| attendance_method(this_day, user) }
     @checker = true
     @@workroles.each do |workrole|
