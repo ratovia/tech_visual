@@ -21,43 +21,43 @@ RSpec.describe RequiredResource, type: :model do
       it '第1キックオフ当日のレコードを正しく取得できる' do
         create(:required_resource, what_day: 1)
         test_records = RequiredResource.on_(Time.new(2019,12,7))
-        expect(test_records.length).to eq default_counts + 1
+        expect(test_records).to eq 1
       end
 
       it '第1キックオフ翌日のレコードを正しく取得できる' do
         create(:required_resource, what_day: 2)
         test_records = RequiredResource.on_(Time.new(2019,12,8))
-        expect(test_records.length).to eq default_counts + 1
+        expect(test_records).to eq 2
       end
 
       it '第1キックオフから7日目のレコードを正しく取得できる' do
         create(:required_resource, what_day: 7)
         test_records = RequiredResource.on_(Time.new(2019,12,13))
-        expect(test_records.length).to eq default_counts + 1
+        expect(test_records).to eq 7
       end
 
       it '第1キックオフから8日目のレコードを正しく取得できる' do
         create(:required_resource, what_day: 8)
         test_records = RequiredResource.on_(Time.new(2019,12,14))
-        expect(test_records.length).to eq default_counts + 1
+        expect(test_records).to eq 8
       end
 
       it '第1キックオフから14日目のレコードを正しく取得できる' do
         create(:required_resource, what_day: 14)
         test_records = RequiredResource.on_(Time.new(2019,12,20))
-        expect(test_records.length).to eq default_counts + 1
+        expect(test_records).to eq 14
       end
 
       it '第2キックオフ当日のレコードを正しく取得できる' do
         create(:required_resource, what_day: 1)
         test_records = RequiredResource.on_(Time.new(2019,12,21))
-        expect(test_records.length).to eq default_counts + 1
+        expect(test_records).to eq 1
       end
 
       it '第2キックオフ翌日のレコードを正しく取得できる' do
         create(:required_resource, what_day: 2)
         test_records = RequiredResource.on_(Time.new(2019,12,22))
-        expect(test_records.length).to eq default_counts + 1
+        expect(test_records).to eq 2
       end
     end
   end
