@@ -23,10 +23,10 @@ class ShiftGenerator
     attendance = user.attendances.find_by(date: this_day)
     array = [0] * DATE_TIME
     flag = false
-    array.each_with_index do |_ary, i|
+    array.length.times do |i|
       flag = true if i == attendance[:attendance_at]
       flag = false if i == attendance[:leaving_at]
-      _ary = flag ? 1 : 0
+      array[i] = flag ? 1 : 0
     end
     { user_id: user.id, array: array }
   end
@@ -89,7 +89,7 @@ class ShiftGenerator
         require_method(this_day, workrole) #必要リソースが
       )
     end
-    @shifts.map(&:save)
+    @shifts.map(&:save) if @checker
     { check: @checker, shift: @shifts }
   end
 end
