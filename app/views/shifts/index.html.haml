@@ -1,0 +1,19 @@
+.table
+  .date-axis
+    - (Settings.Attendance_time + 1).times do |num|
+      - if num == 0
+        .time-cell
+      - else
+        .time-cell
+          = num + 9
+          \:00
+  / ユーザーの仮置き
+  - 4.times do |num|
+    .name-axis
+      .cell
+        / ユーザー名の仮置き
+        user#{num + 1}
+      .worktime
+        - Settings.Attendance_time.times do |num|
+          .worktime-cell
+
