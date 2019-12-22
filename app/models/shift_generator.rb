@@ -22,11 +22,8 @@ class ShiftGenerator
   def attendance_method(this_day, user)
     attendance = user.attendances.find_by(date: this_day)
     array = [0] * DATE_TIME
-    flag = false
-    array.length.times do |i|
-      flag = true if i == attendance[:attendance_at]
-      flag = false if i == attendance[:leaving_at]
-      array[i] = flag ? 1 : 0
+    array.each_with_index do |_ary, i|
+      array[i] = 1 if i >= attendance[:attendance_at] && i < attendance[:leaving_at]
     end
     { user_id: user.id, array: array }
   end
