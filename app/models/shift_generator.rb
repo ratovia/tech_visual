@@ -33,14 +33,9 @@ class ShiftGenerator
 
   # 出勤しているユーザから必要リソース人数抽出する。
   def find_assign_users(req, i, attendances)
-    # TODO　mapメソッド化
-    assign_user = []
-    # TODO 他のshiftがないか確認
-    attendances.each do |attendance|
-      if attendance[:array][i] == 1
-        assign_user << attendance[:user_id]
-      end
-    end
+    assign_user = attendances.map do |attendance|
+      attendance[:user_id] if attendance[:array][i] == 1
+    end.compact
     assign_user.sample(req) # sampleメソッドは、配列からランダムで引数の数取り出す。
   end
 
