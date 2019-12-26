@@ -11,8 +11,9 @@
   - 4.times do |num|
     .name-axis
       .cell
-        / ユーザー名の仮置き
-        user#{num + 1}
+        = link_to admin_shifts_path do
+          / ユーザー名の仮置き
+          user#{num}
       .worktime
         - Settings.Attendance_time.times do |num|
           .worktime-cell
