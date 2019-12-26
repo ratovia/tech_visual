@@ -54,7 +54,8 @@ ActiveAdmin.setup do |config|
   #
   # This setting changes the method which Active Admin calls
   # within the application controller.
-  config.authentication_method = :authenticate_user!
+  # config.authentication_method = :authenticate_user!
+  config.authentication_method = false
   config.authorization_adapter = ActiveAdmin::CanCanAdapter
   config.on_unauthorized_access = :access_denied
 
@@ -136,7 +137,7 @@ ActiveAdmin.setup do |config|
   # config.comments_order = 'created_at ASC'
   #
   # You can disable the menu item for the comments index page:
-  # config.comments_menu = false
+  config.comments_menu = false
   #
   # You can customize the comment menu:
   # config.comments_menu = { parent: 'Admin', priority: 1 }
@@ -232,20 +233,21 @@ ActiveAdmin.setup do |config|
   #
   # To change the default utility navigation to show a link to your website & a logout btn
   #
-  #   config.namespace :admin do |admin|
-  #     admin.build_menu :utility_navigation do |menu|
-  #       menu.add label: "My Great Website", url: "http://www.mygreatwebsite.com", html_options: { target: :blank }
-  #       admin.add_logout_button_to_menu menu
-  #     end
-  #   end
+    config.namespace :admin do |admin|
+      admin.build_menu :utility_navigation do |menu|
+        menu.add label: 'log in', url: '/admin/login'
+        admin.add_current_user_to_menu  menu
+        admin.add_logout_button_to_menu menu
+      end
+    end
   #
   # If you wanted to add a static menu item to the default menu provided:
   #
-  #   config.namespace :admin do |admin|
-  #     admin.build_menu :default do |menu|
-  #       menu.add label: "My Great Website", url: "http://www.mygreatwebsite.com", html_options: { target: :blank }
-  #     end
-  #   end
+    # config.namespace :admin do |admin|
+    #   admin.build_menu :default do |menu|
+    #     menu.add label: "My Great Website", url: "http://www.mygreatwebsite.com", html_options: { target: :blank }
+    #   end
+    # end
 
   # == Download Links
   #
