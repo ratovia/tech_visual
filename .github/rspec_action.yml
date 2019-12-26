@@ -1,0 +1,31 @@
+name: rspec_action
+
+on:
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ratovia/tech-linux
+      
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: Setting
+      run: |
+        source /etc/profile
+        rbenv rehash
+        gem install bundler -v 2.0.2
+        bundle install --jobs 4 --retry 3
+        service mysqld start
+        bundle exec rake db:create
+        bundle exec rake db:migrate
+        bundle exec rake db:seed
+        bundle exec rspec
+        
+      shell: bash
+      env:
+        RAILS_ENV: test 
