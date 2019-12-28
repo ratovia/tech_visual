@@ -17,6 +17,8 @@ ActiveAdmin.register Shift do
   index do
     if user_signed_in?.nil? || current_user.employee?
       render partial: 'index'
+    else
+      render partial: 'admin_index'
     end
   end
 end
