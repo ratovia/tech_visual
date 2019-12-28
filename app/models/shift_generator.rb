@@ -1,5 +1,4 @@
 class ShiftGenerator
-  # TODO　定数としてconfigに入れる
   def initialize(users, workroles)
     @@users = users
     @@workroles = workroles
@@ -61,7 +60,6 @@ class ShiftGenerator
 
   # 必要リソースのデータ取得
   def require_method(this_day,workrole)
-    # TODO this_dayからWhat_dayをだす。
     workrole.required_resources.where(what_day: RequiredResource.on_(this_day)).map { |h| h[:count] }  
   end
 
