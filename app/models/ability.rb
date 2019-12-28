@@ -7,9 +7,8 @@ class Ability
     # Define abilities for the passed in user here.
     user ||= User.new # guest user (not logged in)
 
-    # DashBoard,Userのreadは誰でもできる
+    # DashBoardのreadは誰でもできる
     can :read, ActiveAdmin::Page, name: 'Dashboard'
-    can :read, User
 
     if user.admin?
       # admin権限は全モデルのmanageができる
@@ -21,6 +20,7 @@ class Ability
       # can :create, CheckBox
       # 自分のCheckBoxモデルはupdateできる
       can :update, CheckBox, user: user
+      can :read, Shift
     end
     #
     # The first argument to `can` is the action you are giving the user
