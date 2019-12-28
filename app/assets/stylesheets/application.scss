@@ -1,5 +1,9 @@
-// @import 'reset';
-@import 'mixin/shift';
-@import 'config/shift';
-@import 'shift';
-@import 'shift_table';
+@import 'config/reset';
+@import 'config/variables';
+@import 'config/common';
+
+// module
+@import 'module/shift_table';
+
+// page style
+@import 'api/shift_generator/create';
