@@ -1,0 +1,20 @@
+.table
+  = current_user.name
+  .date-axis
+    - (Settings.Attendance_time + 1).times do |num|
+      - if num == 0
+        .time-cell
+      - else
+        .time-cell
+          = num + 9
+          \:00
+  / ユーザーの仮置き
+  - Time.current.end_of_month.day.times do |num|
+    .name-axis
+      .cell
+        / 日付
+        = display_day_and_wday(Time.new(2019, 12, num+1))
+      .worktime
+        - Settings.Attendance_time.times do |attendance|
+          .worktime-cell
+
