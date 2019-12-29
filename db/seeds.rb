@@ -5,15 +5,49 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-User.create!(name: 'シフト職人' ,email: 'admin@namba', password: 'adminpass', password_confirmation: 'adminpass', role: 1) if Rails.env.development?
-user1 = User.create(name: "John",email: "John@furukido.local",password: "password")
-user2 = User.create(name: "Kevin",email: "Kevin@furukido.local",password: "password")
-user3 = User.create(name: "Cacy",email: "Cacy@furukido.local",password: "password")
-Attendance.create(date: Time.current, attendance_at: 10, leaving_at: 20,user_id: user1.id)
-Attendance.create(date: Time.current, attendance_at: 12, leaving_at: 22,user_id: user2.id)
-Attendance.create(date: Time.current, attendance_at: 18, leaving_at: 22,user_id: user3.id)
-workrole = WorkRole.create(name: "事務作業")
-req = [ 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1 , 1 , 2 , 2 , 2 , 2 , 2 , 2 , 3 , 2 , 2 , 1 , 0 , 0 ] #0時〜23時
-req.each_with_index do |data, i|
-  RequiredResource.create(what_day: RequiredResource.on_(Time.current), clock_at: i, count: data ,work_role_id: workrole.id)
+
+require 'csv'
+
+# users
+CSV.foreach('db/csv/users.csv', headers: true) do |row|
+  User.where(email: row['email']).first_or_create do |user|
+    user.name = row['name']
+    user.email = row['email']
+    user.password = row['password']
+    user.role = row['role'].to_i
+  end
+end
+
+# work_roles
+CSV.foreach('db/csv/work_roles.csv', headers: true) do |row|
+  WorkRole.where(name: row['name']).first_or_create
+end
+
+# attendances
+CSV.foreach('db/csv/attendances.csv', headers: true) do |row|
+  Attendance.where(date: row['date'], user_id: row['user_id']).first_or_create do |attendance|
+    attendance.attendance_at = row['attendance_at']
+    attendance.leaving_at = row['leaving_at']
+  end
+end
+
+# required_resources
+CSV.foreach('db/csv/required_resources.csv', headers: true) do |row|
+  RequiredResource.where(
+    what_day: row['what_day'],
+    clock_at: row['clock_at'],
+    work_role_id: row['work_role_id']
+  ).first_or_create do |wr|
+    wr.count = row['count']
+  end
+end
+
+# shifts
+CSV.foreach('db/csv/shifts.csv', headers: true) do |row|
+  Shift.where(
+    shift_in_at: row['shift_in_at'],
+    shift_out_at: row['shift_out_at'],
+    user_id: row['user_id'],
+    work_role_id: row['work_role_id']
+  ).first_or_create
 end
