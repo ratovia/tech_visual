@@ -3,7 +3,6 @@ class Api::ShiftGeneratorController < ApplicationController
     users = User.where(role: "employee").includes(:attendances)
     workroles = WorkRole.all
     s = ShiftGenerator.new(users, workroles)
-    # TODO  期間を渡す
-    @result = s.generate()
+    @result = s.generate(params[:start],params[:finish])
   end
 end
