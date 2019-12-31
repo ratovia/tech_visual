@@ -1,20 +1,24 @@
-.table
-  .date-axis
-    - (Settings.Attendance_time + 1).times do |num|
-      - if num == 0
-        .time-cell
-      - else
-        .time-cell
-          = num + 9
-          \:00
-  / ユーザーの仮置き
-  - 4.times do |num|
-    .name-axis
-      .cell
-        = link_to admin_shifts_path do
-          / ユーザー名の仮置き
-          user#{num}
-      .worktime
-        - Settings.Attendance_time.times do |num|
-          .worktime-cell
-
+%section.shift_api_create_page
+  %h1.page_title シフト一覧
+  %table.shift_table
+    %tr
+      %th
+      - [*0..23].each do |d|
+        - if d >= 8 && d <= 24
+          %th
+            = d
+        - else
+          %th.hidden
+            = d
+    - Shift.all.each do |shift|
+      %tr
+        %td 
+          = shift.user.name
+        - shift_time_to_array(shift).each_with_index do |is_shift, i|
+          - if i >= 8 && i <= 24
+            - if is_shift
+              %td.blue
+            - else
+              %td
+          - else
+            %td.hidden
