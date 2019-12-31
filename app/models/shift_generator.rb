@@ -1,6 +1,4 @@
 class ShiftGenerator
-  # TODO　定数としてconfigに入れる
-  DATE_TIME = 24
   def initialize(users, workroles)
     @@users = users
     @@workroles = workroles
@@ -8,7 +6,7 @@ class ShiftGenerator
 
   # チェックテストメソッド　必要リソース == 確定シフトの合計となっていること
   def check(req, sum)
-    DATE_TIME.times do |i|
+    Settings.DATE_TIME.times do |i|
       return false if req[i] != sum[i]
     end
     true
@@ -21,7 +19,7 @@ class ShiftGenerator
   # [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0]
   def attendance_method(this_day, user)
     attendance = user.attendances.find_by(date: this_day)
-    array = [0] * DATE_TIME
+    array = [0] * Settings.DATE_TIME
     array.each_with_index do |_ary, i|
       array[i] = 1 if i >= attendance[:attendance_at] && i < attendance[:leaving_at]
     end
@@ -38,7 +36,7 @@ class ShiftGenerator
 
   # シフト生成メソッド(シフトのルールベースから生成する)
   def generate_by_rule_base(this_day, workrole, attendances, required)
-    sum = [0] * DATE_TIME
+    sum = [0] * Settings.DATE_TIME
     shift_array = @@users.map { |user| Shift.new(user_id: user.id, work_role_id: workrole.id) }
     required.each_with_index do |req, i|
       if req > sum[i]
@@ -62,7 +60,6 @@ class ShiftGenerator
 
   # 必要リソースのデータ取得
   def require_method(this_day,workrole)
-    # TODO this_dayからWhat_dayをだす。
     workrole.required_resources.where(what_day: RequiredResource.on_(this_day)).map { |h| h[:count] }  
   end
 

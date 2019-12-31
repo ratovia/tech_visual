@@ -10,7 +10,7 @@
         - else
           %th.hidden
             = d
-    - Shift.all.each do |shift|
+    - @result[:shift].each do |shift|
       %tr
         %td 
           = shift.user.name
