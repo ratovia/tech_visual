@@ -6,6 +6,9 @@
     margin: 50px 0;
     font-size: 24px;
   }
-  
-  @include shift_table();
+  .slick_container{
+    .shift_container{
+      @include shift_table();
+    }
+  }
 }
