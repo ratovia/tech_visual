@@ -3,6 +3,12 @@ class Api::ShiftGeneratorController < ApplicationController
     users = User.where(role: "employee").includes(:attendances)
     workroles = WorkRole.all
     s = ShiftGenerator.new(users, workroles)
-    @result = s.generate(params[:start],params[:finish])
+    @result = s.generate(period_params)
+  end
+
+  private
+
+  def period_params
+    @period = params.permit(:start, :finish)
   end
 end

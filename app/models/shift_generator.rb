@@ -67,11 +67,11 @@ class ShiftGenerator
   end
 
   # シフト生成メソッド
-  def generate(start,finish)
-    (DateTime.parse(start)..DateTime.parse(finish)).each do |this_day|
+  def generate(period)
+    @shifts = []
+    (DateTime.parse(period[:start])..DateTime.parse(period[:finish])).each do |this_day|
       attendances = @@users.map { |user| attendance_method(this_day, user) }
       @checker = true
-      @shifts = []
       @@workroles.each do |workrole|
         @shifts += generate_by_rule_base(
           this_day, # どの日の
