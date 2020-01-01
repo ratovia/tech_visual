@@ -1,24 +1,30 @@
 %section.shift_api_create_page
   %h1.page_title シフト一覧
-  %table.shift_table
-    %tr
-      %th
-      - [*0..23].each do |d|
-        - if d >= 8 && d <= 24
-          %th
-            = d
-        - else
-          %th.hidden
-            = d
-    - @result[:shift].each do |shift|
-      %tr
-        %td 
-          = shift.user.name
-        - shift_time_to_array(shift).each_with_index do |is_shift, i|
-          - if i >= 8 && i <= 24
-            - if is_shift
-              %td.blue
-            - else
-              %td
-          - else
-            %td.hidden
+  .slick_container
+    - (DateTime.parse(@period[:start])..DateTime.parse(@period[:finish])).each do |this_day|
+      .shift_container
+        %h
+          = this_day.strftime("%Y/%m/%d")
+        %table
+          %tr
+            %th
+            - [*0..23].each do |d|
+              - if d >= 8 && d <= 24
+                %th
+                  = d
+              - else
+                %th.hidden
+                  = d
+          - @result[:shift].each do |shift|
+            - if this_day.strftime("%Y/%m/%d") == shift[:shift_in_at].strftime("%Y/%m/%d")
+              %tr
+                %td 
+                  = shift.user.name
+                - shift_time_to_array(shift).each_with_index do |is_shift, i|
+                  - if i >= 8 && i <= 24
+                    - if is_shift
+                      %td.blue
+                    - else
+                      %td
+                  - else
+                    %td.hidden
