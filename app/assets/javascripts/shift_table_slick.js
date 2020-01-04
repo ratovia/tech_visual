@@ -1,5 +1,5 @@
 $(function(){
-  $('.slick_container').slick({
+  $('.shift-slick_container').slick({
     arrow: true,
     dots: true,
     infinite: false,

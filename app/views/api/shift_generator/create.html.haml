@@ -1,8 +1,8 @@
 %section.shift_api_create_page
   %h1.page_title シフト一覧
-  .slick_container
+  .shift-tables.shift-slick_container
     - (DateTime.parse(@period[:start])..DateTime.parse(@period[:finish])).each do |this_day|
-      .shift_container
+      .shift-table
         %h
           = this_day.strftime("%Y/%m/%d")
         %table
