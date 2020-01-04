@@ -1,0 +1,5 @@
+name,email,password,role
+Admin,admin@namba,password,1
+John,john@furukido.local,password,2
+Kevin,kevin@furukido.local,password,2
+Cacy,cacy@furukido.local,password,2
