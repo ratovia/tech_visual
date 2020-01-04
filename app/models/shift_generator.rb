@@ -53,9 +53,7 @@ class ShiftGenerator
       end
     end
     # シフト時間が入らなかったShiftインスタンスは排除
-    shift_array = shift_array.map { |shift| shift if shift[:shift_in_at].present?}
-    shift_array = shift_array.compact
-
+    shift_array.keep_if { |shift| shift.shift_in_at? }
     @checker = false unless check(required,sum)
     # 複数人のshiftが入った配列
     shift_array
