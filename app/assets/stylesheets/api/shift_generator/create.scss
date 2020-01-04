@@ -1,0 +1,11 @@
+.shift_api_create_page{
+  width: 90%;
+  margin: 0 auto;
+  
+  .page_title{
+    margin: 50px 0;
+    font-size: 24px;
+  }
+  
+  @include shift_table();
+}

@@ -5,6 +5,5 @@ class Api::ShiftGeneratorController < ApplicationController
     s = ShiftGenerator.new(users, workroles)
     # TODO  期間を渡す
     @result = s.generate()
-    binding.pry
   end
 end
