@@ -6,6 +6,9 @@
     margin: 50px 0;
     font-size: 24px;
   }
-  
-  @include shift_table();
+  .shift-tables{
+    .shift-table{
+      @include shift_table_style();
+    }
+  }
 }
