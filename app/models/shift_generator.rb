@@ -25,10 +25,21 @@ class ShiftGenerator
     { user_id: user.id, array: array }
   end
 
+  # 該当ユーザが、該当日、時間に未アサインであるか？
+  def unassigned?(this_day, time, user_id)
+    @shifts.each do |shift|
+      next if shift[:user_id] != user_id
+      next if shift[:shift_in_at].strftime('%Y-%m-%d') != this_day.strftime('%Y-%m-%d')
+      return false if time >= shift[:shift_in_at].strftime('%H').to_i &&
+                      time <  shift[:shift_out_at].strftime('%H').to_i
+    end
+    true
+  end
+
   # 出勤しているユーザから必要リソース人数抽出する。
-  def find_assign_users(req, i, attendances)
+  def find_assign_users(this_day, time, req, attendances)
     assign_user = attendances.map do |attendance|
-      attendance[:user_id] if attendance[:array][i] == 1
+      attendance[:user_id] if attendance[:array][time] == 1 && unassigned?(this_day, time, attendance[:user_id])
     end.compact
     assign_user.sample(req) # sampleメソッドは、配列からランダムで引数の数取り出す。
   end
@@ -37,18 +48,18 @@ class ShiftGenerator
   def generate_by_rule_base(this_day, workrole, attendances, required)
     sum = [0] * Settings.DATE_TIME
     shift_array = @@users.map { |user| Shift.new(user_id: user.id, work_role_id: workrole.id) }
-    required.each_with_index do |req, i|
-      if req > sum[i]
-        find_assign_users(req, i, attendances).map do |user_id|
+    required.each_with_index do |req, time|
+      if req > sum[time]
+        find_assign_users(this_day, time, req, attendances).map do |user_id|
           shift_instance = shift_array.map { |shift| shift if shift.user_id == user_id}
           shift_instance = shift_instance.compact[0]
           if shift_instance.shift_in_at.nil?
-            shift_instance.shift_in_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: i)
-            shift_instance.shift_out_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: i+1)
+            shift_instance.shift_in_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time)
+            shift_instance.shift_out_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time+1)
           else
-            shift_instance.shift_out_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: i+1)
+            shift_instance.shift_out_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time+1)
           end
-          sum[i] += 1
+          sum[time] += 1
         end
       end
     end
