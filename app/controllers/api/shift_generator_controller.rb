@@ -4,6 +4,7 @@ class Api::ShiftGeneratorController < ApplicationController
     workroles = WorkRole.all
     s = ShiftGenerator.new(users, workroles)
     @result = s.generate(period_params)
+    @workrole_ids = workroles.map(&:id)
   end
 
   private
