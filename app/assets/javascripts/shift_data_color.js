@@ -14,7 +14,7 @@ $(function(){
     function setColorArray(len){
       let array = [];
       for (let i=0; i<len; i++) {
-        array.push(randomColor())
+        array.push(randomColor());
       }
       return array;
     }
