@@ -12,23 +12,23 @@ $(function(){
 
     // 指定された長さの、カラーコードが格納された配列を返す。
     function setColorArray(len){
-      let array = [];
+      const array = [];
       for (let i=0; i<len; i++) {
         array.push(randomColor());
       }
       return array;
     }
 
-    let workrole_ids = $(".shift-tables").data("workrole-ids");
-    let color_array = setColorArray(workrole_ids.length);
+    const workrole_ids = $(".shift-tables").data("workrole-ids");
+    const color_array = setColorArray(workrole_ids.length);
       
     // 色クラスが付いているところは該当の色を割り当てる
     $(".color_shift-data").each(function(){
-      let workrole_id = $( this ).data("workrole-id");
-      let nth = $.inArray(workrole_id, workrole_ids);
-      let color = color_array[nth];
+      const workrole_id = $( this ).data("workrole-id");
+      const nth = $.inArray(workrole_id, workrole_ids);
+      const color = color_array[nth];
 
-      let styles = {
+      const styles = {
         backgroundColor : color,
         border : `1px solid ${color}`,
         borderBottom : `1px solid #dee2e6`
