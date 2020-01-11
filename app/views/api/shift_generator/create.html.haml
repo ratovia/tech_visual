@@ -1,6 +1,6 @@
 %section.shift_api_create_page
   %h1.page_title シフト一覧
-  .shift-tables.shift-slick_container{data: {workrole: {ids: @workrole_ids}}}
+  .shift-tables.shift-slick_container{data: {workrole: {ids: WorkRole.ids}}}
     - (DateTime.parse(@period[:start])..DateTime.parse(@period[:finish])).each do |this_day|
       .shift-table
         %h
