@@ -1,6 +1,6 @@
 %section.shift_api_create_page
   %h1.page_title シフト一覧
-  .shift-tables.shift-slick_container
+  .shift-tables.shift-slick_container{data: {workrole: {ids: WorkRole.ids}}}
     - (DateTime.parse(@period[:start])..DateTime.parse(@period[:finish])).each do |this_day|
       .shift-table
         %h
@@ -23,7 +23,7 @@
                 - shift_time_to_array(shift).each_with_index do |is_shift, i|
                   - if i >= 8 && i <= 24
                     - if is_shift
-                      %td.blue
+                      %td.color_shift-data{data: {workrole: {id: shift.work_role.id}}}
                     - else
                       %td
                   - else
