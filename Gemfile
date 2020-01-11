@@ -87,4 +87,5 @@ gem 'cancancan'
 gem 'config'
 gem 'devise'
 gem 'haml-rails'
+gem 'activerecord-import'
 
