@@ -18,20 +18,22 @@ attendances = []
     email: Faker::Internet.free_email,
     password: Faker::Internet.password(min_length: 8)
   )
-
-  time_array = [rand(23),rand(23)].sort
-  (start..finish).each do |this_day|
-    attendances << Attendance.new(date: this_day, attendance_at: time_array[0], leaving_at: time_array[1],user_id: user.id)
+  if user.persisted?
+    (start..finish).each do |this_day|
+      time_array = [rand(24),rand(24)].sort
+      attendances << Attendance.new(date: this_day, attendance_at: time_array[0], leaving_at: time_array[1],user_id: user.id)
+    end
   end
 end
+
 Attendance.import! attendances
 
 requiredresources = []
 4.times do |n|
   workrole = WorkRole.create!(name: Faker::Company.name)
-  req = ([0] * 23).map{ |x| rand(10) }.sort.rotate(rand(23)) #0時〜23時
-  req.each_with_index do |data, i|
-    (start..finish).each do |this_day|
+  (start..finish).each do |this_day|
+    req = ([0] * 23).map{ |x| rand(10) }.sort.rotate(rand(23)) #0時〜23時
+    req.each_with_index do |data, i|
       requiredresources << RequiredResource.new(what_day: RequiredResource.on_(this_day), clock_at: i, count: data ,work_role_id: workrole.id)
     end
   end
