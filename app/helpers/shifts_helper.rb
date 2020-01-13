@@ -2,7 +2,7 @@ module ShiftsHelper
   def shift_time_to_array(shift)
     array = [false] * Settings.DATE_TIME
     array.each_with_index do |_ary, i|
-      array[i] = true if i >= str2hour(shift[:shift_in_at]) && i < str2hour(shift[:shift_out_at])
+      array[i] = shift[:work_role_id] if i >= str2hour(shift[:shift_in_at]) && i < str2hour(shift[:shift_out_at])
     end
     array
   end
