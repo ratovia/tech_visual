@@ -67,8 +67,8 @@ class ShiftGenerator
     shift_array.keep_if { |shift| shift.shift_in_at? }
     @checker = false unless check(required,sum) 
     # TODO メソッドの役割とマッチしないので、あまりここで@req、@sumの値変更はしたくない。
-    @req << { date: this_day, workrole: workrole.name, array: required }
-    @sum << { date: this_day, workrole: workrole.name, array: sum }
+    @req << { date: this_day, workrole: {id: workrole.id, name: workrole.name}, array: required }
+    @sum << { date: this_day, workrole: {id: workrole.id, name: workrole.name}, array: sum }
     # 複数人のshiftが入った配列
     shift_array
   end
