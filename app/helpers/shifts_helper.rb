@@ -15,4 +15,14 @@ module ShiftsHelper
     wd = ["日", "月", "火", "水", "木", "金", "土"]
     day.strftime("%d日 (#{wd[day.wday]})")
   end
+
+  def shifts_to_one_array(shifts)
+    array = [nil] * Settings.DATE_TIME
+    shifts.each do |shift|
+      shift_time_to_array(shift).each_with_index do |_ary, i| 
+        array[i] ||= _ary
+      end
+    end
+    array
+  end
 end
