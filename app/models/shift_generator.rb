@@ -65,7 +65,10 @@ class ShiftGenerator
     end
     # シフト時間が入らなかったShiftインスタンスは排除
     shift_array.keep_if { |shift| shift.shift_in_at? }
-    @checker = false unless check(required,sum)
+    @checker = false unless check(required,sum) 
+    # TODO メソッドの役割とマッチしないので、あまりここで@req、@sumの値変更はしたくない。
+    @req << { date: this_day, workrole: workrole.name, array: required }
+    @sum << { date: this_day, workrole: workrole.name, array: sum }
     # 複数人のshiftが入った配列
     shift_array
   end
@@ -78,6 +81,8 @@ class ShiftGenerator
   # シフト生成メソッド
   def generate(period)
     @shifts = []
+    @sum = []
+    @req = []
     (DateTime.parse(period[:start])..DateTime.parse(period[:finish])).each do |this_day|
       attendances = @@users.map { |user| attendance_method(this_day, user) }
       @checker = true
@@ -91,6 +96,6 @@ class ShiftGenerator
       end
     end
     @shifts.map(&:save) if @checker
-    { check: @checker, shift: @shifts }
+    { check: @checker, shift: @shifts ,sum: @sum, req: @req}
   end
 end

@@ -28,3 +28,28 @@
                       %td
                   - else
                     %td.hidden
+
+
+          - @result[:req].each do |req|
+            - if this_day.strftime("%Y/%m/%d") == req[:date].strftime("%Y/%m/%d")
+              %tr
+                %td
+                  = req[:workrole]
+                - req[:array].each_with_index do |data,i|
+                  - if i >= 8 && i <= 24
+                    %td
+                      = data
+                  - else
+                    %td.hidden
+          - @result[:sum].each do |sum|
+            - if this_day.strftime("%Y/%m/%d") == sum[:date].strftime("%Y/%m/%d")
+              %tr
+                %td
+                  = sum[:workrole]
+                - sum[:array].each_with_index do |data,i|
+                  - if i >= 8 && i <= 24
+                    %td
+                      = data
+                  - else
+                    %td.hidden
+          
