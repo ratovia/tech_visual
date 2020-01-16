@@ -1,6 +1,5 @@
 $(function(){
   $(".shift-tables").ready(function(){
-    // TODO: slickの複数日付にも対応する
     const workrole_ids = $("[data-workrole-ids]").data("workrole-ids")
     $("[data-date]").each(function(){
       let _this = this;
