@@ -1,3 +1,4 @@
+= link_to 'トップページ', root_path
 %section.shift_api_create_page
   %h1.page_title シフト一覧
   .shift-tables.shift-slick_container{data: {workrole: {ids: WorkRole.ids}}}
@@ -18,7 +19,7 @@
           - @result[:shift].each do |shift|
             - if this_day.strftime("%Y/%m/%d") == shift[:shift_in_at].strftime("%Y/%m/%d")
               %tr
-                %td 
+                %td
                   = shift.user.name
                 - shift_time_to_array(shift).each_with_index do |is_shift, i|
                   - if i >= 8 && i <= 24

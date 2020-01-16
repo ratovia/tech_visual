@@ -3,6 +3,6 @@ Rails.application.routes.draw do
   devise_for :users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   namespace :api do
-    post 'shift_generator' => 'shift_generator#create'
+    resource :shift_generator, only: :show
   end
 end
