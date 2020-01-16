@@ -2,7 +2,7 @@
   %h1.page_title シフト一覧
   .shift-tables.shift-slick_container{data: {workrole: {ids: WorkRole.ids}}}
     - (DateTime.parse(@period[:start])..DateTime.parse(@period[:finish])).each do |this_day|
-      .shift-table
+      .shift-table{data: {date: this_day.strftime("%Y/%m/%d")}}
         %h
           = this_day.strftime("%Y/%m/%d")
         %table
