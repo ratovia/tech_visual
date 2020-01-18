@@ -30,7 +30,9 @@
                   - if is_shift
                     %td.color_shift-data{data: {workrole: {id: is_shift}}}
                   - else
-                    %td.hidden
+                    %td
+                - else
+                  %td.hidden
           %tr.shift-table__resource
             -# table width 17 columns(24 - 8 + 1 + 1)
             %td.title{colspan: "17"}
