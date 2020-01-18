@@ -6,6 +6,16 @@
     margin: 50px 0;
     font-size: 24px;
   }
+  .workrole-example_lists{
+    display: flex;
+    margin: 30px 0px;
+    justify-content: space-around;
+    width: 100%;
+    li{
+      padding: 10px;
+      color: white;
+    }
+  }
   .shift-tables{
     .shift-table{
       @include shift_table_style();

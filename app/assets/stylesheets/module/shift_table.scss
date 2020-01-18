@@ -19,5 +19,17 @@
       text-align: left;
       background:white;
     }
+    
+    .shift-table__resource{
+      .title{
+        font-weight: bold;
+        text-align: center;
+      }
+    }
+
+    .not_enough_resource{
+      font-weight: bold;
+      color: red;
+    }
   }
 }

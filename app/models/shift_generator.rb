@@ -52,12 +52,19 @@ class ShiftGenerator
       if req > sum[time]
         find_assign_users(this_day, time, req, attendances).map do |user_id|
           shift_instance = shift_array.map { |shift| shift if shift.user_id == user_id}
-          shift_instance = shift_instance.compact[0]
+          shift_instance = shift_instance.compact.last
           if shift_instance.shift_in_at.nil?
             shift_instance.shift_in_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time)
             shift_instance.shift_out_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time+1)
-          else
+          elsif shift_instance.shift_out_at.strftime('%H').to_i == time
             shift_instance.shift_out_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time+1)
+          else
+            shift_array << Shift.new(
+              user_id: user_id,
+              work_role_id: workrole.id,
+              shift_in_at: Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time),
+              shift_out_at: Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time+1)
+            )
           end
           sum[time] += 1
         end
@@ -65,7 +72,10 @@ class ShiftGenerator
     end
     # シフト時間が入らなかったShiftインスタンスは排除
     shift_array.keep_if { |shift| shift.shift_in_at? }
-    @checker = false unless check(required,sum)
+    @checker = false unless check(required,sum) 
+    # TODO メソッドの役割とマッチしないので、あまりここで@req、@sumの値変更はしたくない。
+    @req << { date: this_day, workrole: {id: workrole.id, name: workrole.name}, array: required }
+    @sum << { date: this_day, workrole: {id: workrole.id, name: workrole.name}, array: sum }
     # 複数人のshiftが入った配列
     shift_array
   end
@@ -78,6 +88,8 @@ class ShiftGenerator
   # シフト生成メソッド
   def generate(period)
     @shifts = []
+    @sum = []
+    @req = []
     (DateTime.parse(period[:start])..DateTime.parse(period[:finish])).each do |this_day|
       attendances = @@users.map { |user| attendance_method(this_day, user) }
       @checker = true
@@ -91,6 +103,6 @@ class ShiftGenerator
       end
     end
     @shifts.map(&:save) if @checker
-    { check: @checker, shift: @shifts }
+    { check: @checker, shift: @shifts ,sum: @sum, req: @req}
   end
 end
