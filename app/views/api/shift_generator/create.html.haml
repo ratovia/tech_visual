@@ -1,5 +1,9 @@
 %section.shift_api_create_page
   %h1.page_title シフト一覧
+  %ul.workrole-example_lists
+    - WorkRole.all.each do |workrole|
+      %li.color_shift-data{data: {workrole: {id: workrole.id}}}
+        = workrole.name
   .shift-tables.shift-slick_container{data: {workrole: {ids: WorkRole.ids}}}
     - (DateTime.parse(@period[:start])..DateTime.parse(@period[:finish])).each do |this_day|
       .shift-table{data: {date: this_day.strftime("%Y/%m/%d")}}
