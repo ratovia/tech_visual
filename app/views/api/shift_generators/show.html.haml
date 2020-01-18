@@ -1,3 +1,4 @@
+= link_to 'トップページ', root_path
 %section.shift_api_create_page
   %h1.page_title シフト一覧
   %ul.workrole-example_lists
@@ -22,7 +23,7 @@
           - User.all.each do |user|
             - user_shifts = Shift.find_user_shift(user,this_day,@result[:shift])
             %tr
-              %td 
+              %td
                 = user.name
               - shifts_to_one_array(user_shifts).each_with_index do |is_shift, i|
                 - if i >= 8 && i <= 24
@@ -60,4 +61,3 @@
                       = data
                   - else
                     %td.hidden{data:{resource_type: "sum", workrole: {id: sum[:workrole][:id]}, time: i}}
-                    
