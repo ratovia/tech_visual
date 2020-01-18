@@ -1,0 +1,35 @@
+@mixin shift_table_style(){
+  table{
+    width: 100%;
+    text-align: center;
+    border: 1px solid #dee2e6; 
+    td, th{
+      padding: 0.75em;
+      text-align: center;
+      border: 1px solid #dee2e6; 
+    }
+    td{
+      background:#ced9f2;
+    }
+    tr:nth-child(odd) td{
+      background: #eff2f7;
+    }
+    
+    tr td:nth-of-type(1){
+      text-align: left;
+      background:white;
+    }
+    
+    .shift-table__resource{
+      .title{
+        font-weight: bold;
+        text-align: center;
+      }
+    }
+
+    .not_enough_resource{
+      font-weight: bold;
+      color: red;
+    }
+  }
+}

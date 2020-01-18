@@ -1,3 +1,8 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  root 'admin/dashboard#index'
+  devise_for :users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
+  namespace :api do
+    resource :shift_generator, only: :show
+  end
 end

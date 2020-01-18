@@ -26,6 +26,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+gem 'sassc', '2.1.0'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
@@ -41,9 +42,13 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # Step execution the pry becomes possible
   gem 'pry-byebug'
-  gem 'rspec-rails'
+  # test gems
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'rspec-rails'
+  gem 'shoulda-matchers'
+  gem 'spring-commands-rspec'
+  # automatic deploy
   gem 'capistrano', '>= 3.11.0'
   gem 'capistrano-rbenv', '>= 2.1.4'
   gem 'capistrano-bundler', '>= 1.5.0'
@@ -66,8 +71,6 @@ group :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '>= 2.15'
   gem 'selenium-webdriver'
-  # Easy installation and use of chromedriver to run system tests with Chrome
-  gem 'chromedriver-helper'
 end
 
 group :production do
@@ -78,3 +81,11 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+gem 'activeadmin'
+gem 'cancancan'
+gem 'config'
+gem 'devise'
+gem 'haml-rails'
+gem 'activerecord-import'
+
