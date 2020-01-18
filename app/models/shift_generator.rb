@@ -52,12 +52,19 @@ class ShiftGenerator
       if req > sum[time]
         find_assign_users(this_day, time, req, attendances).map do |user_id|
           shift_instance = shift_array.map { |shift| shift if shift.user_id == user_id}
-          shift_instance = shift_instance.compact[0]
+          shift_instance = shift_instance.compact.last
           if shift_instance.shift_in_at.nil?
             shift_instance.shift_in_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time)
             shift_instance.shift_out_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time+1)
-          else
+          elsif shift_instance.shift_out_at.strftime('%H').to_i == time
             shift_instance.shift_out_at = Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time+1)
+          else
+            shift_array << Shift.new(
+              user_id: user_id,
+              work_role_id: workrole.id,
+              shift_in_at: Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time),
+              shift_out_at: Time.zone.strptime(this_day.to_s,"%Y-%m-%d").change(hour: time+1)
+            )
           end
           sum[time] += 1
         end

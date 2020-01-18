@@ -2,7 +2,7 @@ module ShiftsHelper
   def shift_time_to_array(shift)
     array = [false] * Settings.DATE_TIME
     array.each_with_index do |_ary, i|
-      array[i] = true if i >= str2hour(shift[:shift_in_at]) && i < str2hour(shift[:shift_out_at])
+      array[i] = shift[:work_role_id] if i >= str2hour(shift[:shift_in_at]) && i < str2hour(shift[:shift_out_at])
     end
     array
   end
@@ -14,5 +14,15 @@ module ShiftsHelper
   def display_day_and_wday(day)
     wd = ["日", "月", "火", "水", "木", "金", "土"]
     day.strftime("%d日 (#{wd[day.wday]})")
+  end
+
+  def shifts_to_one_array(shifts)
+    array = [nil] * Settings.DATE_TIME
+    shifts.each do |shift|
+      shift_time_to_array(shift).each_with_index do |_ary, i| 
+        array[i] ||= _ary
+      end
+    end
+    array
   end
 end

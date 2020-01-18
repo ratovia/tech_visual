@@ -15,17 +15,15 @@
               - else
                 %th.hidden
                   = d
-          - @result[:shift].each do |shift|
-            - if this_day.strftime("%Y/%m/%d") == shift[:shift_in_at].strftime("%Y/%m/%d")
-              %tr
-                %td 
-                  = shift.user.name
-                - shift_time_to_array(shift).each_with_index do |is_shift, i|
-                  - if i >= 8 && i <= 24
-                    - if is_shift
-                      %td.color_shift-data{data: {workrole: {id: shift.work_role.id}}}
-                    - else
-                      %td
+          - User.all.each do |user|
+            - user_shifts = Shift.find_user_shift(user,this_day,@result[:shift])
+            %tr
+              %td 
+                = user.name
+              - shifts_to_one_array(user_shifts).each_with_index do |is_shift, i|
+                - if i >= 8 && i <= 24
+                  - if is_shift
+                    %td.color_shift-data{data: {workrole: {id: is_shift}}}
                   - else
                     %td.hidden
           %tr.shift-table__resource
@@ -58,4 +56,4 @@
                       = data
                   - else
                     %td.hidden{data:{resource_type: "sum", workrole: {id: sum[:workrole][:id]}, time: i}}
-          
+                    
