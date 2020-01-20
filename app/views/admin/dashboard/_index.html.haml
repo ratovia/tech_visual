@@ -28,5 +28,20 @@
     - @work_roles.each do |wr|
       %tr
         %td= wr.name
-        - wr.required_resources.on_thisday(@thisday).each do |rr|
-          %td= rr.count
+        - resources_count_to_ary(wr.required_resources.on_thisday(@thisday)).each_with_index do |count, i|
+          - if i >= 8 && i < 24
+            - if count != 0
+              %td= count
+            - else
+              %td 0
+    %tr.shift-table__resource
+      %td{colspan: 17} 確定シフト
+    - @work_roles.each do |wr|
+      %tr
+        %td= wr.name
+        - shifts_to_count_ary(wr.shifts.on_thisday(@thisday)).each_with_index do |count, i|
+          - if i >= 8 && i <= 24
+            - if count != 0
+              %td= count
+            - else
+              %td 0

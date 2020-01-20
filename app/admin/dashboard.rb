@@ -5,7 +5,7 @@ ActiveAdmin.register_page "Dashboard" do
     def index
       @thisday = DateTime.new(2020,1,1)
       @users = User.includes(shifts: :work_role)
-      @work_roles = WorkRole.includes(:required_resources)
+      @work_roles = WorkRole.includes(:required_resources, :shifts)
     end
   end
 
