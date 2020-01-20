@@ -1,4 +1,8 @@
 class RequiredResource < ApplicationRecord
+  # scope
+  scope :on_thisday, ->(date_time) { where(what_day: RequiredResource.on_(date_time))
+                                     .order('clock_at ASC')
+                                   }
   # associations
   belongs_to :work_role
 

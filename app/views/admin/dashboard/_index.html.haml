@@ -1,6 +1,6 @@
-%section.shift_api_create_page
-  %h1.page_title シフト一覧
-  %table.shift_table
+%section.dashboard.shift-tables{data: {workrole: {ids: WorkRole.ids}}}
+  %h1.page_title= @thisday
+  %table.shift-table{data: {date: DateTime.now.strftime("%Y/%m/%d")}}
     %tr
       %th
       - [*0..23].each do |d|
@@ -10,15 +10,23 @@
         - else
           %th.hidden
             = d
-    - Shift.all.each do |shift|
+    - @users.each do |user|
+      - user_shifts = Shift.find_user_shift(user, @thisday)
       %tr
-        %td 
-          = shift.user.name
-        - shift_time_to_array(shift).each_with_index do |is_shift, i|
+        %td
+          = user.name
+        - shifts_to_one_array(user_shifts).each_with_index do |is_shift, i|
           - if i >= 8 && i <= 24
             - if is_shift
-              %td.blue
+              %td.color_shift-data{data: {workrole: {id: is_shift}}}
             - else
               %td
           - else
             %td.hidden
+    %tr.shift-table__resource
+      %td{colspan: 17} 必要リソース
+    - @work_roles.each do |wr|
+      %tr
+        %td= wr.name
+        - wr.required_resources.on_thisday(@thisday).each do |rr|
+          %td= rr.count
