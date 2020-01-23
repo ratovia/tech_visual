@@ -3,6 +3,7 @@ ActiveAdmin.register_page "Dashboard" do
 
   controller do
     def index
+      # TODO 本日の日付にする
       @thisday = DateTime.new(2020,1,1)
       @users = User.includes(shifts: :work_role)
       @work_roles = WorkRole.includes(:required_resources, :shifts)

@@ -3,6 +3,7 @@ module RequiredResourcesHelper
   def resources_count_to_ary(required_resources)
     ary = Array.new(24, 0).map.with_index do |_ele, i|
       count = 0
+      # aryの中で、index(＝時間)がclock_atと一致する要素へcountの数値分足し合わせる
       required_resources.each do |rr|
         count += rr.count if rr.clock_at == i
       end

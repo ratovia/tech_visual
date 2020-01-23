@@ -33,7 +33,7 @@ module ShiftsHelper
       shift[:shift_out_at].hour = 24 if shift[:shift_out_at].hour.zero?
       # アサインされるべき時間で配列を作る
       assign = [*shift[:shift_in_at].hour..shift[:shift_out_at].hour - 1]
-      # aryのindex＝時間帯の所に+=1する
+      # aryのindex＝時間帯の要素を+1する
       assign.each { |clock| ary[clock] += 1 }
     end
     ary
