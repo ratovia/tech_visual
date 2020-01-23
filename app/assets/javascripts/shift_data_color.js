@@ -1,6 +1,6 @@
 $(function(){
   // 画面にshift-tableが存在したら
-  $(".shift-tables").ready(function(){
+  if ($(".shift-tables")[0]) {
     // 16進数のランダムなカラーコードを生成する
     function randomColor(){
       let colorCode = "#";
@@ -9,7 +9,6 @@ $(function(){
       }
       return colorCode;
     }
-
     // 指定された長さの、カラーコードが格納された配列を返す。
     function setColorArray(len){
       const array = [];
@@ -21,7 +20,7 @@ $(function(){
 
     const workrole_ids = $(".shift-tables").data("workrole-ids");
     const color_array = setColorArray(workrole_ids.length);
-      
+
     // 色クラスが付いているところは該当の色を割り当てる
     $(".color_shift-data").each(function(){
       const workrole_id = $( this ).data("workrole-id");
@@ -35,5 +34,5 @@ $(function(){
       };
       $( this ).css(styles);
     });
-  });
+  }
 })
