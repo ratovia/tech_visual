@@ -27,7 +27,7 @@ module ShiftsHelper
   end
 
   # Shiftsのインスタンス群を時間ごとのアサイン数に変換する
-  def shifts_to_count_ary(shifts)
+  def shifts_count_to_ary(shifts)
     ary = Array.new(24, 0)
     shifts.each do |shift|
       shift[:shift_out_at].hour = 24 if shift[:shift_out_at].hour.zero?
