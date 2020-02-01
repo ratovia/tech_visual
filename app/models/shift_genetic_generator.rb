@@ -37,10 +37,25 @@ class ShiftGeneticGenerator
   # 評価関数
   # in: 遺伝子リスト
   # out: 評価(0.00 ~ 1.00)
-  def evaluation
+  def evaluation(genom)
+    genom[:shifts].map { |shift| ShiftGenerator.evaluation(shift) }
     # 遺伝子の要素各々を評価する
+    element_sum = 0.0;
+    genom[:shifts].map { |shift| element_sum += shift[:evaluation]}
     # 制約達成度を評価する
     # 必要リソース充足を評価する
+    
+    genom[:evaluation] = element_sum / genom[:shifts].length
+  end
+
+  # 世代の評価を表示する
+  def display(genoms, gen)
+    min = genoms.min_by { |genom| genom[:evaluation]}
+    max = genoms.max_by { |genom| genom[:evaluation]}
+    puts "----- 第#{gen + 1}世代 -----"
+    puts "最小値: #{min[:evaluation]}"
+    puts "最大値: #{max[:evaluation]}"
+    # p max
   end
 
   # 遺伝的アルゴリズム
