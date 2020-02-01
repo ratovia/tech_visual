@@ -6,32 +6,56 @@ class ShiftGeneticGenerator
   MAX_GENERATION = 100
 
 
-  def initialize
-
+  def initialize(users, workroles)
+    @@users = users
+    @@workroles = workroles
+    @sg = ShiftGenerator.new(@@users, @@workroles)
   end
 
   # 選択関数
   # in: 遺伝子リスト
   # out: エリート遺伝子リスト
-  def select()
+  def select(genoms)
     # ソートしてエリート遺伝子を選択する
+    genoms.sort_by { |h| h[:evaluation]}.pop(SELECT_GENOM)
   end
 
   # 交叉関数
-  # in: エリート遺伝子A、エリート遺伝子B
+  # in: エリート遺伝子リスト
   # out: 子遺伝子複数
-  def crossover()
+  def crossover(genoms)
+    len = genoms.length
+    genoms.shuffle!
     # 遺伝子の要素ごとにどちらかをランダムに採用する
-    # 子を複数作成する
+    (len / 2).times do |i|
+      parent = [genoms[2*i],genoms[2*i+1]]
+      4.times do |i|
+        progeny_genom = {
+          this_day: parent[0][:this_day], 
+          required: parent[0][:required],
+          sum: parent[0][:sum],
+          shifts: []
+        }
+        @@users.length.times do |j|
+          progeny_genom[:shifts].push({
+            user_id: parent[0][:shifts][j][:user_id],
+            array: parent[rand(2)][:shifts][j][:array]
+          })
+        end
+        genoms << progeny_genom 
+      end
+    end
+    genoms
   end
 
 
   # 突然変異関数
   # in: 遺伝子リスト
   # out: 遺伝子リスト
-  def mutation
+  def mutation(genoms)
     # 遺伝子の要素各々をINDIVIDUAL_MUTATIONの確率でランダムに変化させる
     # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
+
   end
 
   # 評価関数
