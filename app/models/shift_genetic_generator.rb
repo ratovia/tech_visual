@@ -1,9 +1,9 @@
 class ShiftGeneticGenerator
-  MAX_GENOM_LIST = 300
+  MAX_GENOM_LIST = 180
   SELECT_GENOM = 60
   INDIVIDUAL_MUTATION = 0.05
   GENOM_MUTATION = 0.08
-  MAX_GENERATION = 600
+  MAX_GENERATION = 100
 
 
   def initialize
