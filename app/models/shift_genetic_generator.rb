@@ -46,20 +46,34 @@ class ShiftGeneticGenerator
   # 遺伝的アルゴリズム
   # in: 期間
   # out: シフトインスタンスの配列
-  def generate
+  def generate(period)
+    shift_instances = []
+    next_genoms = nil
     # 期間を受け取って期間分繰り返す
-    # current_genomsに現在の世代の遺伝子データを格納
-    current_genoms = MAX_GENOM_LIST.map { sg.generate()}
-    # MAX_GENERATIONの数だけ繰り返す
-    # MAX_GENOM_LISTの数だけ繰り返す
-    # それぞれの遺伝子を評価する
-    # current_genomsから選択し、elite_genomsに格納する
-    # elite_genomsから交叉して子を作成し、progeny_genomsに格納する
-    # 次世代の遺伝子を決める
-    # current_genoms、elite_genoms、progeny_genomsをそれぞれ突然変異させる
-    # この世代の最小、最大、平均などをを出力する
-    # 最大値が1.00になった場合、MAX_GENERATIONに到達した場合終了
-    #
-    # 遺伝子からShiftインスタンスを生成する
+    (DateTime.parse(period[:start])..DateTime.parse(period[:finish])).each do |this_day|
+      # MAX_GENERATIONの数だけ繰り返す
+      MAX_GENERATION.times do |gen|
+        # current_genomsに現在の世代の遺伝子データを格納
+        current_genoms = next_genoms || [*0...MAX_GENOM_LIST].map { @sg.generate(this_day)}
+        # current_genomsを評価する
+        current_genoms.map { |genom| evaluation(genom) }
+        # この世代の最小、最大、平均などをを出力する
+        display(current_genoms, gen)
+        # 最大値が1.00になった場合終了
+        max_genom = current_genoms.max_by { |genom| genom[:evaluation]}
+        if max_genom[:evaluation] == 1 
+          shift_instances << Shift.build_from_genoms(max_genom)
+        else
+          # current_genomsから選択し、elite_genomsに格納する
+          elite_genoms = select(current_genoms)
+          # elite_genomsから交叉して子を作成し、progeny_genomsに格納する
+          progeny_genoms = crossover(elite_genoms)
+          # 次世代の遺伝子を決める
+          next_genoms = elite_genoms + progeny_genoms
+          # elite_genoms、progeny_genomsをそれぞれ突然変異させる
+          mutation(next_genoms)
+        end
+      end
+    end
   end
 end
