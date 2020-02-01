@@ -1,6 +1,15 @@
 ActiveAdmin.register_page "Dashboard" do
   menu priority: 1, label: proc { I18n.t("active_admin.dashboard") }
 
+  controller do
+    def index
+      # TODO 本日の日付にする
+      @thisday = DateTime.new(2020,1,1)
+      @users = User.includes(shifts: :work_role)
+      @work_roles = WorkRole.includes(:required_resources, :shifts)
+    end
+  end
+
   content title: proc { I18n.t("active_admin.dashboard") } do
     # admin/dash_board/_indexを呼び出す
     render partial: 'index'

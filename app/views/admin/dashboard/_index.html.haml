@@ -1,8 +1,8 @@
-%section.shift_api_create_page
-  %h1.page_title シフト一覧
-  %table.shift_table
+%section.dashboard.shift-tables{data: {workrole: {ids: WorkRole.ids}}}
+  %h1.page_title
+  %table.shift-table{data: {date: DateTime.now.strftime("%Y/%m/%d")}}
     %tr
-      %th
+      %th= @thisday.strftime('%Y年 %m月 %d日')
       - [*0..23].each do |d|
         - if d >= 8 && d <= 24
           %th
@@ -10,15 +10,33 @@
         - else
           %th.hidden
             = d
-    - Shift.all.each do |shift|
+    - @users.each do |user|
       %tr
-        %td 
-          = shift.user.name
-        - shift_time_to_array(shift).each_with_index do |is_shift, i|
+        %td
+          = user.name
+        - shifts_to_one_array(user.shifts.on_thisday(@thisday)).each_with_index do |is_shift, i|
           - if i >= 8 && i <= 24
             - if is_shift
-              %td.blue
+              %td.color_shift-data{data: {workrole: {id: is_shift}}}
             - else
               %td
           - else
             %td.hidden
+    %tr.shift-table__resource
+      %td.title{colspan: 17} 必要リソース
+    - @work_roles.each do |wr|
+      %tr
+        %td= wr.name
+        - resources_count_to_ary(wr.required_resources.on_thisday(@thisday)).each_with_index do |count, i|
+          - if i >= 8 && i < 24
+            %td{data:{resource_type: "req", workrole: {id: wr.id}, time: i}}
+              = count
+    %tr.shift-table__resource
+      %td.title{colspan: 17} 確定シフト
+    - @work_roles.each do |wr|
+      %tr
+        %td= wr.name
+        - shifts_count_to_ary(wr.shifts.on_thisday(@thisday)).each_with_index do |count, i|
+          - if i >= 8 && i <= 24
+            %td{data:{resource_type: "sum", workrole: {id: wr.id}, time: i}}
+              = count
