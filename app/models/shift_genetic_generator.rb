@@ -53,9 +53,17 @@ class ShiftGeneticGenerator
   # in: 遺伝子リスト
   # out: 遺伝子リスト
   def mutation(genoms)
-    # 遺伝子の要素各々をINDIVIDUAL_MUTATIONの確率でランダムに変化させる
-    # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
-
+    genoms.each_with_index do |genom, i|
+      genom[:shifts].each do |shift|
+        # 遺伝子の要素各々をINDIVIDUAL_MUTATIONの確率でランダムに変化させる
+        len = @workroles.length
+        shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? rand(@workroles.length) : x}
+      end
+      # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
+      if rand(100) <= GENOM_MUTATION * 100
+        genoms[i] = @sg.generate(genom[:this_day])
+      end
+    end
   end
 
   # 評価関数
@@ -68,7 +76,6 @@ class ShiftGeneticGenerator
     genom[:shifts].map { |shift| element_sum += shift[:evaluation]}
     # 制約達成度を評価する
     # 必要リソース充足を評価する
-    
     genom[:evaluation] = element_sum / genom[:shifts].length
   end
 
@@ -79,7 +86,6 @@ class ShiftGeneticGenerator
     puts "----- 第#{gen + 1}世代 -----"
     puts "最小値: #{min[:evaluation]}"
     puts "最大値: #{max[:evaluation]}"
-    # p max
   end
 
   # 遺伝的アルゴリズム
@@ -107,10 +113,10 @@ class ShiftGeneticGenerator
           elite_genoms = select(current_genoms)
           # elite_genomsから交叉して子を作成し、progeny_genomsに格納する
           progeny_genoms = crossover(elite_genoms)
+          # elite_genoms、progeny_genomsをそれぞれ突然変異させる
+          mutation(progeny_genoms)
           # 次世代の遺伝子を決める
           next_genoms = elite_genoms + progeny_genoms
-          # elite_genoms、progeny_genomsをそれぞれ突然変異させる
-          mutation(next_genoms)
         end
       end
     end
