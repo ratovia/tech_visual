@@ -1,9 +1,11 @@
 class ShiftGenerator
   def initialize(users, workroles)
-    @@users = users
-    @@workroles = workroles
+    @users = users
+    @workroles = workroles
   end
 
+    @workroles.each do |wr|
+    end
   def self.evaluation(shift)
     count = 0.0
     previous_list = []
@@ -80,6 +82,7 @@ class ShiftGenerator
     @shifts = [], @sum = [], @req = []
     attendances = @@users.map { |user| attendance_method(this_day, user) }
     @@workroles.each do |workrole|
+    @workroles.each do |workrole|
       generate_by_rule_base(
         this_day, # どの日の
         workrole, # どの場所に

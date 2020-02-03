@@ -7,9 +7,9 @@ class ShiftGeneticGenerator
 
 
   def initialize(users, workroles)
-    @@users = users
-    @@workroles = workroles
-    @sg = ShiftGenerator.new(@@users, @@workroles)
+    @users = users
+    @workroles = workroles
+    @sg = ShiftGenerator.new(@users, @workroles)
   end
 
   # 選択関数
@@ -36,7 +36,7 @@ class ShiftGeneticGenerator
           sum: parent[0][:sum],
           shifts: []
         }
-        @@users.length.times do |j|
+        @users.length.times do |j|
           progeny_genom[:shifts].push({
             user_id: parent[0][:shifts][j][:user_id],
             array: parent[rand(2)][:shifts][j][:array]
