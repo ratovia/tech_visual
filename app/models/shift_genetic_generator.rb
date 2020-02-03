@@ -97,6 +97,8 @@ class ShiftGeneticGenerator
     # 期間を受け取って期間分繰り返す
     (DateTime.parse(period[:start])..DateTime.parse(period[:finish])).each do |this_day|
       # MAX_GENERATIONの数だけ繰り返す
+      @sg.setAttendances(this_day)
+      @sg.setRequiredResources(this_day)
       MAX_GENERATION.times do |gen|
         # current_genomsに現在の世代の遺伝子データを格納
         current_genoms = next_genoms || [*0...MAX_GENOM_LIST].map { @sg.generate(this_day)}

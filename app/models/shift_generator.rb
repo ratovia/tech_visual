@@ -4,8 +4,17 @@ class ShiftGenerator
     @workroles = workroles
   end
 
+  def setAttendances(this_day)
+    @attendances = @users.map { |user| attendance_method(this_day, user) }
+  end
+
+  def setRequiredResources(this_day)
+    @required_resources = []
     @workroles.each do |wr|
+      @required_resources << {workrole_id: wr.id, array: require_method(this_day, wr)}
     end
+  end
+
   def self.evaluation(shift)
     count = 0.0
     previous_list = []
@@ -80,14 +89,13 @@ class ShiftGenerator
   # out: シフトの一覧
   def generate(this_day)
     @shifts = [], @sum = [], @req = []
-    attendances = @@users.map { |user| attendance_method(this_day, user) }
-    @@workroles.each do |workrole|
+    attendances = @attendances.deep_dup
     @workroles.each do |workrole|
       generate_by_rule_base(
         this_day, # どの日の
         workrole, # どの場所に
         attendances, # 誰が出勤していて
-        require_method(this_day, workrole) #必要リソースが
+        @required_resources.find {|h| h[:workrole_id] == workrole.id } &.fetch(:array) #必要リソースが
       )
     end
     {this_day: this_day,required: @req, sum: @sum, shifts: attendances}
