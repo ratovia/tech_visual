@@ -17,7 +17,7 @@ class ShiftGeneticGenerator
   # out: エリート遺伝子リスト
   def select(genoms)
     # ソートしてエリート遺伝子を選択する
-    genoms.sort_by { |h| h[:evaluation]}.pop(SELECT_GENOM)
+    genoms.sort_by! { |h| h[:evaluation]}.pop(SELECT_GENOM)
   end
 
   # 交叉関数
@@ -26,6 +26,7 @@ class ShiftGeneticGenerator
   def crossover(genoms)
     len = genoms.length
     genoms.shuffle!
+    progeny_genoms = []
     # 遺伝子の要素ごとにどちらかをランダムに採用する
     (len / 2).times do |i|
       parent = [genoms[2*i],genoms[2*i+1]]
@@ -42,10 +43,10 @@ class ShiftGeneticGenerator
             array: parent[rand(2)][:shifts][j][:array]
           })
         end
-        genoms << progeny_genom 
+        progeny_genoms << progeny_genom
       end
     end
-    genoms
+    progeny_genoms
   end
 
 
@@ -90,15 +91,16 @@ class ShiftGeneticGenerator
 
   # 遺伝的アルゴリズム
   # in: 期間
-  # out: シフトインスタンスの配列
+  # out: max_genomsのリスト
   def generate(period)
-    shift_instances = []
+    max_genoms = []
     next_genoms = nil
     # 期間を受け取って期間分繰り返す
     (DateTime.parse(period[:start])..DateTime.parse(period[:finish])).each do |this_day|
       # MAX_GENERATIONの数だけ繰り返す
       @sg.setAttendances(this_day)
       @sg.setRequiredResources(this_day)
+      max_genom = nil
       MAX_GENERATION.times do |gen|
         # current_genomsに現在の世代の遺伝子データを格納
         current_genoms = next_genoms || [*0...MAX_GENOM_LIST].map { @sg.generate(this_day)}
@@ -109,7 +111,9 @@ class ShiftGeneticGenerator
         # 最大値が1.00になった場合終了
         max_genom = current_genoms.max_by { |genom| genom[:evaluation]}
         if max_genom[:evaluation] == 1 
-          shift_instances << Shift.build_from_genoms(max_genom)
+          max_genoms << max_genom
+        elsif gen == MAX_GENERATION - 1
+          max_genoms << max_genom
         else
           # current_genomsから選択し、elite_genomsに格納する
           elite_genoms = select(current_genoms)
@@ -122,5 +126,6 @@ class ShiftGeneticGenerator
         end
       end
     end
+    max_genoms
   end
 end
