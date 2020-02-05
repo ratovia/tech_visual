@@ -118,7 +118,7 @@ class ShiftGeneticGenerator
           # current_genomsから選択し、elite_genomsに格納する
           elite_genoms = select(current_genoms)
           # elite_genomsから交叉して子を作成し、progeny_genomsに格納する
-          progeny_genoms = crossover(elite_genoms)
+          progeny_genoms = crossover(elite_genoms).deep_dup
           # elite_genoms、progeny_genomsをそれぞれ突然変異させる
           mutation(progeny_genoms)
           # 次世代の遺伝子を決める
