@@ -15,7 +15,7 @@ class ShiftGenerator
     end
   end
 
-  def self.evaluation(shift)
+  def evaluation(shift)
     count = 0.0
     previous_list = []
     # 一度出てきたworkrole_idが連続ではなく再度出現した時にcount 1する
