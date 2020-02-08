@@ -12,13 +12,13 @@ RSpec.describe Shift, type: :model do
     context 'self.build_from_genoms' do
       let(:user) { create(:user) }
       let(:work_roles) { create_list(:work_role, 4) }
-      let(:genoms) {{
+      let(:genoms) {[{
         this_day: "Wed, 01 Jan 2020 00:00:00 +0000",
         shifts: [
           user_id: user.id,
           array: [nil, nil, nil, nil, nil, nil, 3, 2, 2, 2, 1, 2, 4, 0, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil]
         ]
-      }}
+      }]}
 
       it '想定しているシフトの件数(6件)と一致している' do
         shifts = Shift.build_from_genoms(genoms)
