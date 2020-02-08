@@ -1,6 +1,6 @@
 class ShiftGeneticGenerator
   MAX_GENOM_LIST = 100
-  SELECT_GENOM = 20
+  SELECT_GENOM = 10
   INDIVIDUAL_MUTATION = 0.08
   GENOM_MUTATION = 0.05
   ADJACENT_MUTATION = 0.05
@@ -32,35 +32,35 @@ class ShiftGeneticGenerator
     len.times do |i|
       parent = [genoms[i]]
       parent.push(genoms[rand(len)])
-      40.times do |x|
+      45.times do |_|
         progeny_genom = {
           this_day: parent[0][:this_day], 
           required: parent[0][:required],
           sum: parent[0][:sum],
           shifts: []
         }
-        @users.length.times do |j|
+        @users.length.times do |user|
           array = [0] * Settings.DATE_TIME
           progeny_genom[:shifts].push({
-            user_id: parent[0][:shifts][j][:user_id],
-            array: array.map!.with_index { |x, z| parent[rand(2)][:shifts][j][:array][z]}
+            user_id: parent[0][:shifts][user][:user_id],
+            array: array.map!.with_index { |_, j| parent[rand(2)][:shifts][user][:array][j]}
           })
         end
         progeny_genoms << progeny_genom
       end
-      40.times do |x|
+      45.times do |_|
         progeny_genom = {
           this_day: parent[0][:this_day],
           required: parent[0][:required],
           sum: parent[0][:sum],
           shifts: []
         }
-        @users.length.times do |j|
+        @users.length.times do |user|
           array = [0] * Settings.DATE_TIME
           progeny_genom[:shifts].push({
-            user_id: parent[0][:shifts][j][:user_id],
-            array: array.map!.with_index { |x, z| parent[rand(2)][:shifts][j][:array][z]},
-            array: parent[0][:shifts][j][:evaluation] >= parent[1][:shifts][j][:evaluation] ? parent[0][:shifts][j][:array] : parent[1][:shifts][j][:array]
+            user_id: parent[0][:shifts][user][:user_id],
+            array: array.map!.with_index { |_, j| parent[rand(2)][:shifts][user][:array][j]},
+            array: parent[0][:shifts][user][:evaluation] >= parent[1][:shifts][user][:evaluation] ? parent[0][:shifts][user][:array] : parent[1][:shifts][user][:array]
           })
         end
         progeny_genoms << progeny_genom

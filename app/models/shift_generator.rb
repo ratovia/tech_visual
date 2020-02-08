@@ -19,17 +19,17 @@ class ShiftGenerator
     count = 0.0
     previous_list = []
     # 一度出てきたworkrole_idが連続ではなく再度出現した時にcount 1する
-    shift[:array].each_with_index do |_ary, i|
-      next if _ary.nil? || _ary == 0
+    shift[:array].each_with_index do |ary, i|
+      next if ary.nil? || ary == 0
       # 今回の数字がlistにすでにあり、連続ではなかったら
-      if previous_list.include?(_ary) && _ary != shift[:array][i - 1]
+      if previous_list.include?(ary) && ary != shift[:array][i - 1]
         count += 1
       end
-      previous_list.push(_ary)
+      previous_list.push(ary)
     end
-    _num = shift[:array].count { |n| !n.nil? } - 1
-    _num = 1 if _num < 1  
-    shift[:evaluation] = (-count + _num) / _num
+    num = shift[:array].count { |n| !n.nil? } - 1
+    num = 1 if num < 1
+    shift[:evaluation] = (-count + num) / num
   end
 
   # 該当ユーザの出勤、非出勤を配列に格納する。 
@@ -40,7 +40,7 @@ class ShiftGenerator
     attendance = user.attendances.find_by(date: this_day)
     array = [nil] * Settings.DATE_TIME
     if attendance.present?
-      array.each_with_index do |_ary, i|
+      array.each_with_index do |_, i|
         array[i] = 0 if i >= attendance[:attendance_at] && i < attendance[:leaving_at]
       end
     end
