@@ -37,7 +37,6 @@ class ShiftGenerator
   # out: { user_id: ユーザのid ,array: [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil] }
   # 出勤=> 0(workrole未割り当て), 非出勤：nil
   def attendance_method(this_day, user)
-    # TODO インスタンス変数に書き出して、genom数、世代数で再生成しないようにする。
     attendance = user.attendances.find_by(date: this_day)
     array = [nil] * Settings.DATE_TIME
     if attendance.present?
