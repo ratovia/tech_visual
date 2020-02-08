@@ -13,7 +13,7 @@ RSpec.describe Shift, type: :model do
       let(:user) { create(:user) }
       let(:work_roles) { create_list(:work_role, 4) }
       let(:genoms) {[{
-        this_day: "Wed, 01 Jan 2020 00:00:00 +0000",
+        this_day: DateTime.new(2020, 1, 1),
         shifts: [
           user_id: user.id,
           array: [nil, nil, nil, nil, nil, nil, 3, 2, 2, 2, 1, 2, 4, 0, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil]
