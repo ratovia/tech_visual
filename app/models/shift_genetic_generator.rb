@@ -1,9 +1,10 @@
 class ShiftGeneticGenerator
-  MAX_GENOM_LIST = 180
-  SELECT_GENOM = 60
+  MAX_GENOM_LIST = 100
+  SELECT_GENOM = 20
   INDIVIDUAL_MUTATION = 0.08
   GENOM_MUTATION = 0.05
-  MAX_GENERATION = 30
+  ADJACENT_MUTATION = 0.05
+  MAX_GENERATION = 100
 
 
   def initialize(users, workroles)
@@ -28,9 +29,10 @@ class ShiftGeneticGenerator
     genoms.shuffle!
     progeny_genoms = []
     # 遺伝子の要素ごとにどちらかをランダムに採用する
-    (len / 2).times do |i|
-      parent = [genoms[2*i],genoms[2*i+1]]
-      4.times do |i|
+    len.times do |i|
+      40.times do |x|
+        parent = [genoms[i]]
+        parent.push(genoms[rand(len)])
         progeny_genom = {
           this_day: parent[0][:this_day], 
           required: parent[0][:required],
@@ -38,9 +40,29 @@ class ShiftGeneticGenerator
           shifts: []
         }
         @users.length.times do |j|
+          array = [0] * Settings.DATE_TIME
           progeny_genom[:shifts].push({
             user_id: parent[0][:shifts][j][:user_id],
-            array: parent[rand(2)][:shifts][j][:array]
+            array: array.map!.with_index { |x, z| parent[rand(2)][:shifts][j][:array][z]}
+          })
+        end
+        progeny_genoms << progeny_genom
+      end
+      40.times do |x|
+        parent = [genoms[i]]
+        parent.push(genoms[rand(len)])
+        progeny_genom = {
+          this_day: parent[0][:this_day],
+          required: parent[0][:required],
+          sum: parent[0][:sum],
+          shifts: []
+        }
+        @users.length.times do |j|
+          array = [0] * Settings.DATE_TIME
+          progeny_genom[:shifts].push({
+            user_id: parent[0][:shifts][j][:user_id],
+            array: array.map!.with_index { |x, z| parent[rand(2)][:shifts][j][:array][z]},
+            array: parent[0][:shifts][j][:evaluation] == 1.0 ? parent[0][:shifts][j][:array] : parent[1][:shifts][j][:array]
           })
         end
         progeny_genoms << progeny_genom
@@ -58,11 +80,11 @@ class ShiftGeneticGenerator
       genom[:shifts].each do |shift|
         # 遺伝子の要素各々をINDIVIDUAL_MUTATIONの確率でランダムに変化させる
         len = @workroles.length
-        shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? rand(@workroles.length) : x}
-      end
-      # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
-      if rand(100) <= GENOM_MUTATION * 100
-        genoms[i] = @sg.generate(genom[:this_day])
+        shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? rand(@workroles.length + 1) : x}
+        # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
+        if rand(100) <= GENOM_MUTATION * 100
+          shift[:array].map! { |x| rand(@workroles.length) if !x.nil?}
+        end
       end
     end
   end
@@ -84,8 +106,11 @@ class ShiftGeneticGenerator
   def display(genoms, gen)
     min = genoms.min_by { |genom| genom[:evaluation]}
     max = genoms.max_by { |genom| genom[:evaluation]}
+    median = genoms.sort_by { |h| h[:evaluation]}[genoms.size/2]
+
     puts "----- 第#{gen + 1}世代 -----"
     puts "最小値: #{min[:evaluation]}"
+    puts "中央値: #{median[:evaluation]}"
     puts "最大値: #{max[:evaluation]}"
   end
 
@@ -110,7 +135,7 @@ class ShiftGeneticGenerator
         display(current_genoms, gen)
         # 最大値が1.00になった場合終了
         max_genom = current_genoms.max_by { |genom| genom[:evaluation]}
-        if max_genom[:evaluation] == 1 
+        if max_genom[:evaluation] == 1.0
           max_genoms << max_genom
         elsif gen == MAX_GENERATION - 1
           max_genoms << max_genom
@@ -120,8 +145,8 @@ class ShiftGeneticGenerator
           # elite_genomsから交叉して子を作成し、progeny_genomsに格納する
           progeny_genoms = crossover(elite_genoms).deep_dup
           # elite_genoms、progeny_genomsをそれぞれ突然変異させる
-          mutation(progeny_genoms)
           # 次世代の遺伝子を決める
+          mutation(progeny_genoms)
           next_genoms = elite_genoms + progeny_genoms
         end
       end
