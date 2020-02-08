@@ -83,7 +83,7 @@ class ShiftGeneticGenerator
         shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? rand(@workroles.length + 1) : x}
         # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
         if rand(100) <= GENOM_MUTATION * 100
-          shift[:array].map! { |x| rand(@workroles.length) if !x.nil?}
+          shift[:array].map! { |x| rand(@workroles.length + 1) if !x.nil?}
         end
       end
     end
@@ -93,7 +93,7 @@ class ShiftGeneticGenerator
   # in: 遺伝子リスト
   # out: 評価(0.00 ~ 1.00)
   def evaluation(genom)
-    genom[:shifts].map { |shift| ShiftGenerator.evaluation(shift) }
+    genom[:shifts].map { |shift| @sg.evaluation(shift) }
     # 遺伝子の要素各々を評価する
     element_sum = 0.0;
     genom[:shifts].map { |shift| element_sum += shift[:evaluation]}
