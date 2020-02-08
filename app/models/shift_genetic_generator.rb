@@ -49,8 +49,6 @@ class ShiftGeneticGenerator
         progeny_genoms << progeny_genom
       end
       40.times do |x|
-        #parent = [genoms[i]]
-        #parent.push(genoms[rand(len)])
         progeny_genom = {
           this_day: parent[0][:this_day],
           required: parent[0][:required],
