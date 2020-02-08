@@ -30,9 +30,9 @@ class ShiftGeneticGenerator
     progeny_genoms = []
     # 遺伝子の要素ごとにどちらかをランダムに採用する
     len.times do |i|
+      parent = [genoms[i]]
+      parent.push(genoms[rand(len)])
       40.times do |x|
-        parent = [genoms[i]]
-        parent.push(genoms[rand(len)])
         progeny_genom = {
           this_day: parent[0][:this_day], 
           required: parent[0][:required],
@@ -49,8 +49,8 @@ class ShiftGeneticGenerator
         progeny_genoms << progeny_genom
       end
       40.times do |x|
-        parent = [genoms[i]]
-        parent.push(genoms[rand(len)])
+        #parent = [genoms[i]]
+        #parent.push(genoms[rand(len)])
         progeny_genom = {
           this_day: parent[0][:this_day],
           required: parent[0][:required],
@@ -62,7 +62,7 @@ class ShiftGeneticGenerator
           progeny_genom[:shifts].push({
             user_id: parent[0][:shifts][j][:user_id],
             array: array.map!.with_index { |x, z| parent[rand(2)][:shifts][j][:array][z]},
-            array: parent[0][:shifts][j][:evaluation] == 1.0 ? parent[0][:shifts][j][:array] : parent[1][:shifts][j][:array]
+            array: parent[0][:shifts][j][:evaluation] >= parent[1][:shifts][j][:evaluation] ? parent[0][:shifts][j][:array] : parent[1][:shifts][j][:array]
           })
         end
         progeny_genoms << progeny_genom
