@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :work_role do
+    sequence(:id) { |n| n }
     name {Faker::Job.title}
 
     trait :with_all_required_resources do
