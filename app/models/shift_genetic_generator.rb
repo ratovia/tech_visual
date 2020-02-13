@@ -16,7 +16,7 @@ class ShiftGeneticGenerator
   # 選択関数
   # in: 遺伝子リスト
   # out: エリート遺伝子リスト
-  def select(genoms)
+  def select_elite(genoms)
     # ソートしてエリート遺伝子を選択する
     genoms.sort_by! { |h| h[:evaluation]}.pop(SELECT_GENOM)
   end
@@ -74,14 +74,14 @@ class ShiftGeneticGenerator
   # in: 遺伝子リスト
   # out: 遺伝子リスト
   def mutation(genoms)
+    len = @workroles.length
     genoms.each_with_index do |genom, i|
       genom[:shifts].each do |shift|
         # 遺伝子の要素各々をINDIVIDUAL_MUTATIONの確率でランダムに変化させる
-        len = @workroles.length
-        shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? rand(@workroles.length + 1) : x}
+        shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? rand(len + 1) : x}
         # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
         if rand(100) <= GENOM_MUTATION * 100
-          shift[:array].map! { |x| rand(@workroles.length + 1) if !x.nil?}
+          shift[:array].map! { |x| rand(len + 1) if !x.nil?}
         end
       end
     end
@@ -139,7 +139,7 @@ class ShiftGeneticGenerator
           max_genoms << max_genom
         else
           # current_genomsから選択し、elite_genomsに格納する
-          elite_genoms = select(current_genoms)
+          elite_genoms = select_elite(current_genoms)
           # elite_genomsから交叉して子を作成し、progeny_genomsに格納する
           progeny_genoms = crossover(elite_genoms).deep_dup
           # elite_genoms、progeny_genomsをそれぞれ突然変異させる

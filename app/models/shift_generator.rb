@@ -52,6 +52,7 @@ class ShiftGenerator
   # out: アサインされたユーザの配列
   def find_assign_users(this_day, time, req, attendances)
     assign_user = attendances.map do |attendance|
+      # 0 : 出勤しているが、シフトインしていない状態(workrole未割り当てな状態)
       attendance[:user_id] if attendance[:array][time] == 0   
     end.compact
     assign_user.sample(req) # sampleメソッドは、配列からランダムで引数の数取り出す。
