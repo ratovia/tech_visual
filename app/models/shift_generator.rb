@@ -27,9 +27,9 @@ class ShiftGenerator
       end
       previous_list.push(ary)
     end
-    num = shift[:array].count { |n| !n.nil? } - 1
-    num = 1 if num < 1
-    shift[:evaluation] = (-count + num) / num
+    count_of_attendance_time = shift[:array].count { |n| !n.nil? } - 1
+    count_of_attendance_time = 1 if count_of_attendance_time < 1
+    shift[:evaluation] = (-count + count_of_attendance_time) / count_of_attendance_time
   end
 
   # 該当ユーザの出勤、非出勤を配列に格納する。 
