@@ -6,6 +6,9 @@ class ShiftGeneticGenerator
   ADJACENT_MUTATION = 0.05
   MAX_GENERATION = 100
 
+  # 評価重み付け
+  SHIFTS_WEIGHT = 0.5
+  SUM_RESOURCE_WEIGHT = 0.5
 
   def initialize(users, workroles)
     @users = users
@@ -43,6 +46,7 @@ class ShiftGeneticGenerator
           array = [0] * Settings.DATE_TIME
           progeny_genom[:shifts].push({
             user_id: parent[0][:shifts][user][:user_id],
+            user_name: parent[0][:shifts][user][:user_name],
             array: array.map!.with_index { |_, j| parent[rand(2)][:shifts][user][:array][j]}
           })
         end
@@ -59,6 +63,7 @@ class ShiftGeneticGenerator
           array = [0] * Settings.DATE_TIME
           progeny_genom[:shifts].push({
             user_id: parent[0][:shifts][user][:user_id],
+            user_name: parent[0][:shifts][user][:user_name],
             array: array.map!.with_index { |_, j| parent[rand(2)][:shifts][user][:array][j]},
             array: parent[0][:shifts][user][:evaluation] >= parent[1][:shifts][user][:evaluation] ? parent[0][:shifts][user][:array] : parent[1][:shifts][user][:array]
           })
@@ -91,13 +96,24 @@ class ShiftGeneticGenerator
   # in: 遺伝子リスト
   # out: 評価(0.00 ~ 1.00)
   def evaluation(genom)
-    genom[:shifts].map { |shift| @sg.evaluation(shift) }
-    # 遺伝子の要素各々を評価する
+    # 評価セッター
+    genom[:shifts].map { |shift| @sg.shift_evaluation(shift) }
+    genom[:sum].map.with_index { |_, i| @sg.sum_evaluation(genom[:sum][i], genom[:required][i])}
+    # 評価値計算
+    ## 遺伝子の評価値を計算する
     element_sum = 0.0;
     genom[:shifts].map { |shift| element_sum += shift[:evaluation]}
-    # 制約達成度を評価する
-    # 必要リソース充足を評価する
-    genom[:evaluation] = element_sum / genom[:shifts].length
+    ## 制約達成度を評価する
+    ### TODO 制約評価
+    ## 必要リソース充足の評価値を計算する
+    sum_resource_sum = 0.0;
+    genom[:sum].map { |sum| sum_resource_sum += sum[:evaluation] }
+    # length
+    sum_len = genom[:sum].length
+    shifts_len =  genom[:shifts].length
+
+    # genom評価値決定
+    genom[:evaluation] = (element_sum / shifts_len) * SHIFTS_WEIGHT  + (sum_resource_sum / sum_len) * SUM_RESOURCE_WEIGHT
   end
 
   # 世代の評価を表示する

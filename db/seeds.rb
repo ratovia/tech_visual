@@ -29,10 +29,10 @@ end
 Attendance.import! attendances
 
 requiredresources = []
-4.times do |n|
+3.times do |n|
   workrole = WorkRole.create!(name: Faker::Company.name)
   (start..finish).each do |this_day|
-    req = ([0] * 23).map{ |x| rand(10) }.sort.rotate(rand(23)) #0時〜23時
+    req = ([0] * 24).map{ |x| rand(10) }.sort.rotate(rand(24)) #0時〜23時
     req.each_with_index do |data, i|
       requiredresources << RequiredResource.new(what_day: RequiredResource.on_(this_day), clock_at: i, count: data ,work_role_id: workrole.id)
     end

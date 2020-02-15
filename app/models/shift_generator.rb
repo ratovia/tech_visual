@@ -15,7 +15,7 @@ class ShiftGenerator
     end
   end
 
-  def evaluation(shift)
+  def shift_evaluation(shift)
     count = 0.0
     previous_list = []
     # 一度出てきたworkrole_idが連続ではなく再度出現した時にcount 1する
@@ -32,6 +32,14 @@ class ShiftGenerator
     shift[:evaluation] = (-count + count_of_attendance_time) / count_of_attendance_time
   end
 
+  def sum_evaluation(sum_hash, required_hash)
+    shortage_count = 0.0;
+    sum_hash[:array].each_with_index do |sum, i|
+      shortage_count += 1 if required_hash[:array][i] > sum
+    end
+    sum_hash[:evaluation] = (-shortage_count + Settings.DATE_TIME) / Settings.DATE_TIME
+  end
+
   # 該当ユーザの出勤、非出勤を配列に格納する。 
   # in; 日付、ユーザ
   # out: { user_id: ユーザのid ,array: [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nil, nil] }
@@ -44,7 +52,7 @@ class ShiftGenerator
         array[i] = 0 if i >= attendance[:attendance_at] && i < attendance[:leaving_at]
       end
     end
-    { user_id: user.id, array: array }
+    { user_id: user.id, user_name: user.name, array: array }
   end
 
   # 出勤しているユーザから必要リソース人数抽出する。
