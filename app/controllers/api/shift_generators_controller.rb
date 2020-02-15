@@ -4,8 +4,8 @@ class Api::ShiftGeneratorsController < ApplicationController
     if user_signed_in? && current_user.admin?
       users = User.where(role: "employee").includes(:attendances)
       workroles = WorkRole.all
-      s = ShiftGenerator.new(users, workroles)
-      @result = s.generate(period_params)
+      sgg = ShiftGeneticGenerator.new(users, workroles)
+      @genoms = sgg.generate(period_params)
       # TODO ここより上でgenomsを生成してtest_genomsと差し替える
       # できればgenomにはuser_idの他にuserインスタンスor名前を持たせて欲しい
       @genoms = test_genoms
