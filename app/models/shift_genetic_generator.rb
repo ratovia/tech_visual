@@ -97,7 +97,15 @@ class ShiftGeneticGenerator
     genom[:shifts].map { |shift| element_sum += shift[:evaluation]}
     # 制約達成度を評価する
     # 必要リソース充足を評価する
-    genom[:evaluation] = element_sum / genom[:shifts].length
+    shortage_count = 0.0;
+    genom[:sum].each_with_index do |sum_hash, i|
+      sum_hash[:array].each_with_index do |sum, j|
+        shortage_count += 1 if genom[:required][i][:array][j] > sum
+      end
+    end
+    sum_len = (genom[:sum].length * Settings.DATE_TIME)
+    shifts_len =  genom[:shifts].length
+    genom[:evaluation] = ((element_sum / shifts_len) + ((-shortage_count + sum_len) / sum_len)) / 2.0 
   end
 
   # 世代の評価を表示する
