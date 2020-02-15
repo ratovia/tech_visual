@@ -6,6 +6,9 @@ class ShiftGeneticGenerator
   ADJACENT_MUTATION = 0.05
   MAX_GENERATION = 100
 
+  # 評価重み付け
+  SHIFTS_WEIGHT = 0.5
+  SUM_RESOURCE_WEIGHT = 0.5
 
   def initialize(users, workroles)
     @users = users
@@ -91,21 +94,24 @@ class ShiftGeneticGenerator
   # in: 遺伝子リスト
   # out: 評価(0.00 ~ 1.00)
   def evaluation(genom)
-    genom[:shifts].map { |shift| @sg.evaluation(shift) }
-    # 遺伝子の要素各々を評価する
+    # 評価セッター
+    genom[:shifts].map { |shift| @sg.shift_evaluation(shift) }
+    genom[:sum].map.with_index { |_, i| @sg.sum_evaluation(genom[:sum][i], genom[:required][i])}
+    # 評価値計算
+    ## 遺伝子の評価値を計算する
     element_sum = 0.0;
     genom[:shifts].map { |shift| element_sum += shift[:evaluation]}
-    # 制約達成度を評価する
-    # 必要リソース充足を評価する
-    shortage_count = 0.0;
-    genom[:sum].each_with_index do |sum_hash, i|
-      sum_hash[:array].each_with_index do |sum, j|
-        shortage_count += 1 if genom[:required][i][:array][j] > sum
-      end
-    end
-    sum_len = (genom[:sum].length * Settings.DATE_TIME)
+    ## 制約達成度を評価する
+    ### TODO 制約評価
+    ## 必要リソース充足の評価値を計算する
+    sum_resource_sum = 0.0;
+    genom[:sum].map { |sum| sum_resource_sum += sum[:evaluation] }
+    # length
+    sum_len = genom[:sum].length
     shifts_len =  genom[:shifts].length
-    genom[:evaluation] = ((element_sum / shifts_len) + ((-shortage_count + sum_len) / sum_len)) / 2.0 
+
+    # genom評価値決定
+    genom[:evaluation] = (element_sum / shifts_len) * SHIFTS_WEIGHT  + (sum_resource_sum / sum_len) * SUM_RESOURCE_WEIGHT
   end
 
   # 世代の評価を表示する
