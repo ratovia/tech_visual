@@ -46,6 +46,7 @@ class ShiftGeneticGenerator
           array = [0] * Settings.DATE_TIME
           progeny_genom[:shifts].push({
             user_id: parent[0][:shifts][user][:user_id],
+            user_name: parent[0][:shifts][user][:user_name],
             array: array.map!.with_index { |_, j| parent[rand(2)][:shifts][user][:array][j]}
           })
         end
@@ -62,6 +63,7 @@ class ShiftGeneticGenerator
           array = [0] * Settings.DATE_TIME
           progeny_genom[:shifts].push({
             user_id: parent[0][:shifts][user][:user_id],
+            user_name: parent[0][:shifts][user][:user_name],
             array: array.map!.with_index { |_, j| parent[rand(2)][:shifts][user][:array][j]},
             array: parent[0][:shifts][user][:evaluation] >= parent[1][:shifts][user][:evaluation] ? parent[0][:shifts][user][:array] : parent[1][:shifts][user][:array]
           })

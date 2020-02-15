@@ -52,7 +52,7 @@ class ShiftGenerator
         array[i] = 0 if i >= attendance[:attendance_at] && i < attendance[:leaving_at]
       end
     end
-    { user_id: user.id, array: array }
+    { user_id: user.id, user_name: user.name, array: array }
   end
 
   # 出勤しているユーザから必要リソース人数抽出する。
