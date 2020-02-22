@@ -33,7 +33,7 @@ class ShiftGenerator
   end
 
   def sum_evaluation(sum_hash, required_hash)
-    shortage_count = 0.0;
+    shortage_count = 0.0
     sum_hash[:array].each_with_index do |sum, i|
       shortage_count += 1 if required_hash[:array][i] > sum
     end
