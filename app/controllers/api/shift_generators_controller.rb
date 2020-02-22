@@ -17,5 +17,3 @@ class Api::ShiftGeneratorsController < ApplicationController
     @period = params.permit(:start, :finish)
   end
 end
-
-end
