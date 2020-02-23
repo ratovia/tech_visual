@@ -99,9 +99,9 @@ class ShiftGeneticGenerator
     # 評価セッター
     genom[:shifts].map { |shift| @sg.shift_evaluation(shift) }
     ## sum再割り当て
-    array = genom[:shifts].map { |shift| shift[:array]}.transpose
+    shifts_transpose_array = genom[:shifts].map { |shift| shift[:array] }.transpose
     @workroles.length.times do |wr|
-      genom[:sum][wr][:array] = array.map{|x| x.group_by{|i| i}[wr+1]&.length || 0}
+      genom[:sum][wr][:array] = shifts_transpose_array.map { |x| x.group_by { |i| i }[wr+1]&.length || 0}
     end
     genom[:sum].map.with_index { |_, i| @sg.sum_evaluation(genom[:sum][i], genom[:required][i])}
     # 評価値計算
