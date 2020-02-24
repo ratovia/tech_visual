@@ -1,1 +1,1 @@
-json.extract! @genom_info, :shift_in_at, :workrole_id
+json.extract! @genom_info, :genom_index, :shift_in_at, :before_role, :after_role

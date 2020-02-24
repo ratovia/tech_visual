@@ -1,5 +1,5 @@
 = link_to 'トップページ', root_path
-= button_to 'シフトを確定する'
+= button_to 'シフトを確定する', api_shift_generator_path
 %section.shift_api_create_page
   %h1.page_title シフト一覧
   %ul.workrole-example_lists
@@ -9,7 +9,7 @@
   .shift-tables.shift-slick_container{data: {workrole: {ids: WorkRole.ids}}}
     - @genoms.each_with_index do |genom, genom_index|
       .shift-table{data: {date: genom[:this_day].strftime("%Y/%m/%d")}}
-        %h1{data: {date: {time: genom[:this_day]}}}
+        %h1
           = genom[:this_day].strftime("%Y/%m/%d")
         %table
           %tr
@@ -43,7 +43,7 @@
                 = req[:workrole][:name]
               - req[:array].each_with_index do |data,i|
                 - if i >= 8 && i <= 24
-                  %td{data:{resource_type: "req", workrole: {id: req[:workrole][:id]}, time: i}}
+                  %td{data:{resource_type: "req", workrole: {id: req[:workrole][:id]}, time: i, genom: {index: genom_index}}}
                     = data
                 - else
                   %td.hidden{data:{resource_type: "req", workrole: {id: req[:workrole][:id]}, time: i}}
@@ -57,7 +57,7 @@
                 = sum[:workrole][:name]
               - sum[:array].each_with_index do |data,i|
                 - if i >= 8 && i <= 24
-                  %td{data:{resource_type: "sum", workrole: {id: sum[:workrole][:id]}, time: i}}
+                  %td{data:{resource_type: "sum", time: i, workrole: {id: sum[:workrole][:id]}, genom: {index: genom_index}}}
                     = data
                 - else
                   %td.hidden{data:{resource_type: "sum", workrole: {id: sum[:workrole][:id]}, time: i}}
