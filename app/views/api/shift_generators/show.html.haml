@@ -1,4 +1,5 @@
 = link_to 'トップページ', root_path
+= button_to 'シフトを確定する', api_shift_generator_path
 %section.shift_api_create_page
   %h1.page_title シフト一覧
   %ul.workrole-example_lists
@@ -6,9 +7,9 @@
       %li.color_shift-data{data: {workrole: {id: workrole.id}}}
         = workrole.name
   .shift-tables.shift-slick_container{data: {workrole: {ids: WorkRole.ids}}}
-    - @genoms.each do |genom|
+    - @genoms.each_with_index do |genom, genom_index|
       .shift-table{data: {date: genom[:this_day].strftime("%Y/%m/%d")}}
-        %h
+        %h1
           = genom[:this_day].strftime("%Y/%m/%d")
         %table
           %tr
@@ -20,14 +21,14 @@
               - else
                 %th.hidden
                   = d
-          - genom[:shifts].each do |shift|
+          - genom[:shifts].each_with_index do |shift, shift_index|
             %tr
               %td
                 = shift[:user_name]
-              - shift[:array].each_with_index do |is_shift, i|
-                - if i >= 8 && i <= 24
+              - shift[:array].each_with_index do |is_shift, shift_in_at|
+                - if shift_in_at >= 8 && shift_in_at <= 24
                   - if is_shift
-                    %td.color_shift-data{data: {workrole: {id: is_shift}}}
+                    %td.color_shift-data{data: {workrole: {id: is_shift},genom_index: genom_index,shift_index: shift_index,shift_in_at: shift_in_at}}
                   - else
                     %td
                 - else
@@ -42,7 +43,7 @@
                 = req[:workrole][:name]
               - req[:array].each_with_index do |data,i|
                 - if i >= 8 && i <= 24
-                  %td{data:{resource_type: "req", workrole: {id: req[:workrole][:id]}, time: i}}
+                  %td{data:{resource_type: "req", workrole: {id: req[:workrole][:id]}, time: i, genom: {index: genom_index}}}
                     = data
                 - else
                   %td.hidden{data:{resource_type: "req", workrole: {id: req[:workrole][:id]}, time: i}}
@@ -56,7 +57,7 @@
                 = sum[:workrole][:name]
               - sum[:array].each_with_index do |data,i|
                 - if i >= 8 && i <= 24
-                  %td{data:{resource_type: "sum", workrole: {id: sum[:workrole][:id]}, time: i}}
+                  %td{data:{resource_type: "sum", time: i, workrole: {id: sum[:workrole][:id]}, genom: {index: genom_index}}}
                     = data
                 - else
                   %td.hidden{data:{resource_type: "sum", workrole: {id: sum[:workrole][:id]}, time: i}}

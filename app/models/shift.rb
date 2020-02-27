@@ -53,7 +53,7 @@ class Shift < ApplicationRecord
           end
         end
       end
-      shift_instances
+      shift_instances.flatten
     end
   end
 end
