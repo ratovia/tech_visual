@@ -4,7 +4,7 @@ class ShiftGeneticGenerator
   INDIVIDUAL_MUTATION = 0.08
   GENOM_MUTATION = 0.05
   ADJACENT_MUTATION = 0.05
-  MAX_GENERATION = 100
+  MAX_GENERATION = 30
 
   # 評価重み付け
   SHIFTS_WEIGHT = 0.5
@@ -98,6 +98,11 @@ class ShiftGeneticGenerator
   def evaluation(genom)
     # 評価セッター
     genom[:shifts].map { |shift| @sg.shift_evaluation(shift) }
+    ## sum再割り当て
+    shifts_transpose_array = genom[:shifts].map { |shift| shift[:array] }.transpose
+    @workroles.ids.each do |wr_id|
+      genom[:sum][wr_id-1][:array] = shifts_transpose_array.map { |x| x.group_by { |i| i }[wr_id]&.length || 0}
+    end
     genom[:sum].map.with_index { |_, i| @sg.sum_evaluation(genom[:sum][i], genom[:required][i])}
     # 評価値計算
     ## 遺伝子の評価値を計算する
@@ -133,9 +138,9 @@ class ShiftGeneticGenerator
   # out: max_genomsのリスト
   def generate(period)
     max_genoms = []
-    next_genoms = nil
     # 期間を受け取って期間分繰り返す
     (DateTime.parse(period[:start])..DateTime.parse(period[:finish])).each do |this_day|
+      next_genoms = nil
       # MAX_GENERATIONの数だけ繰り返す
       @sg.setAttendances(this_day)
       @sg.setRequiredResources(this_day)
@@ -151,6 +156,7 @@ class ShiftGeneticGenerator
         max_genom = current_genoms.max_by { |genom| genom[:evaluation]}
         if max_genom[:evaluation] == 1.0
           max_genoms << max_genom
+          break
         elsif gen == MAX_GENERATION - 1
           max_genoms << max_genom
         else
