@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_many :attendances
   has_many :check_boxes
   has_many :shifts
+  has_many :assignables
+  has_many :work_roles, through: :assignables
 
   # validates
   validates :name, :role, presence: true
