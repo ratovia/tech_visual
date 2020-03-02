@@ -9,7 +9,6 @@ class User < ApplicationRecord
 
   # associations
   has_many :attendances
-  has_many :check_boxes
   has_many :shifts
   has_many :assignables
   has_many :work_roles, through: :assignables
