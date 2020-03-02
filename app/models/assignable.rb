@@ -4,5 +4,5 @@ class Assignable < ApplicationRecord
   belongs_to :work_role
 
   # validations
-  validates :user_id, uniquness: { scope: [:work_role_id]  }
+  validates :user_id, uniqueness: { scope: [:work_role_id]  }
 end
