@@ -1,18 +1,21 @@
 class ShiftGeneticGenerator
-  MAX_GENOM_LIST = 100
+  MAX_GENOM_LIST = 200
   SELECT_GENOM = 10
+  NON_SELECT_GENOM = MAX_GENOM_LIST - SELECT_GENOM
+  CROSS_GENOM = NON_SELECT_GENOM / 2
   INDIVIDUAL_MUTATION = 0.08
   GENOM_MUTATION = 0.05
   ADJACENT_MUTATION = 0.05
   MAX_GENERATION = 30
 
   # 評価重み付け
-  SHIFTS_WEIGHT = 0.5
-  SUM_RESOURCE_WEIGHT = 0.5
+  SHIFTS_WEIGHT = 0.3
+  SUM_RESOURCE_WEIGHT = 0.7
 
   def initialize(users, workroles)
     @users = users
     @workroles = workroles
+    @assignable = @users.map { |user| {user_id: user.id, assignable_workroles: user.work_roles}}
     @sg = ShiftGenerator.new(@users, @workroles)
   end
 
@@ -35,7 +38,7 @@ class ShiftGeneticGenerator
     len.times do |i|
       parent = [genoms[i]]
       parent.push(genoms[rand(len)])
-      45.times do |_|
+      CROSS_GENOM.times do |_|
         progeny_genom = {
           this_day: parent[0][:this_day], 
           required: parent[0][:required],
@@ -52,7 +55,7 @@ class ShiftGeneticGenerator
         end
         progeny_genoms << progeny_genom
       end
-      45.times do |_|
+      CROSS_GENOM.times do |_|
         progeny_genom = {
           this_day: parent[0][:this_day],
           required: parent[0][:required],
@@ -83,10 +86,16 @@ class ShiftGeneticGenerator
     genoms.each_with_index do |genom, i|
       genom[:shifts].each do |shift|
         # 遺伝子の要素各々をINDIVIDUAL_MUTATIONの確率でランダムに変化させる
-        shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? rand(len + 1) : x}
+        # shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? rand(len + 1) : x}
         # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
+        # if rand(100) <= GENOM_MUTATION * 100
+        #  shift[:array].map! { |x| rand(len + 1) if !x.nil?}
+        # end
+        
+        user_assignable = @assignable.find { |as| as[:user_id] == shift[:user_id] } 
+        shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? user_assignable[:assignable_workroles].sample&.id : x}
         if rand(100) <= GENOM_MUTATION * 100
-          shift[:array].map! { |x| rand(len + 1) if !x.nil?}
+          shift[:array].map! { |x| user_assignable[:assignable_workroles].sample&.id if !x.nil?}
         end
       end
     end
@@ -108,8 +117,6 @@ class ShiftGeneticGenerator
     ## 遺伝子の評価値を計算する
     element_sum = 0.0;
     genom[:shifts].map { |shift| element_sum += shift[:evaluation]}
-    ## 制約達成度を評価する
-    ### TODO 制約評価
     ## 必要リソース充足の評価値を計算する
     sum_resource_sum = 0.0;
     genom[:sum].map { |sum| sum_resource_sum += sum[:evaluation] }
