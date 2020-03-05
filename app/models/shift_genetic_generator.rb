@@ -85,15 +85,10 @@ class ShiftGeneticGenerator
     len = @workroles.length
     genoms.each_with_index do |genom, i|
       genom[:shifts].each do |shift|
-        # 遺伝子の要素各々をINDIVIDUAL_MUTATIONの確率でランダムに変化させる
-        # shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? rand(len + 1) : x}
-        # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
-        # if rand(100) <= GENOM_MUTATION * 100
-        #  shift[:array].map! { |x| rand(len + 1) if !x.nil?}
-        # end
-        
         user_assignable = @assignable.find { |as| as[:user_id] == shift[:user_id] } 
+        # 遺伝子の要素各々をINDIVIDUAL_MUTATIONの確率でランダムに変化させる
         shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? user_assignable[:assignable_workroles].sample&.id : x}
+        # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
         if rand(100) <= GENOM_MUTATION * 100
           shift[:array].map! { |x| user_assignable[:assignable_workroles].sample&.id if !x.nil?}
         end
