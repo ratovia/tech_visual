@@ -16,10 +16,6 @@ class Ability
     end
 
     if user.employee?
-      # CheckBoxモデルをcreateできない
-      # can :create, CheckBox
-      # 自分のCheckBoxモデルはupdateできる
-      can :update, CheckBox, user: user
       can :read, Shift
     end
     #
