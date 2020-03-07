@@ -26,12 +26,12 @@
           - if Shift.exist_on_thisday?(day)
             - @users.each do |user|
               %tr
-                %td{data: {user: {id: user.id}}}
+                %td.user_name{data: {user: {id: user.id}}}
                   = user.name
-                - shifts_to_one_array(user.shifts.on_thisday(day)).each_with_index do |is_shift, i|
-                  - if i >= 8 && i <= 24
+                - shifts_to_one_array(user.shifts.on_thisday(day)).each_with_index do |is_shift, shift_in_at|
+                  - if shift_in_at >= 8 && shift_in_at <= 24
                     - if is_shift
-                      %td.color_shift-data{data: {workrole: {id: is_shift}}}
+                      %td.color_shift-data.js-update_shift{data: {"workrole-id": is_shift, "shift-in-at": shift_in_at} }
                     - else
                       %td
                   - else
