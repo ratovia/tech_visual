@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   namespace :api do
     resource :shift_generator, only: [:show, :create, :update]
   end
+  resources :shifts, only: :index
 end

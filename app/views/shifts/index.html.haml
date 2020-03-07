@@ -1,0 +1,56 @@
+= form_with url: api_shift_generator_path, method: :get, local: true do |f|
+  .shift_gen
+    = f.date_field :start
+    = f.date_field :finish
+    = f.submit
+
+%section.admin-shifts
+  %h1.page_title シフト一覧
+  %ul.workrole-example_lists
+    - @workroles.each do |workrole|
+      %li.color_shift-data{data: {workrole: {id: workrole.id}}}
+        = workrole.name
+  .shift-tables.shift-slick_container{data: {workrole: {ids: @workroles.ids}}}
+    - @days.each_with_index do |day|
+      .shift-table{data: {date: day.strftime("%Y/%m/%d")}}
+        %table
+          %tr
+            %th= day.strftime('%Y年 %m月 %d日')
+            - [*0..23].each do |d|
+              - if d >= 8 && d <= 24
+                %th
+                  = d
+              - else
+                %th.hidden
+                  = d
+          - if Shift.exist_on_thisday?(day)
+            - @users.each do |user|
+              %tr
+                %td{data: {user: {id: user.id}}}
+                  = user.name
+                - shifts_to_one_array(user.shifts.on_thisday(day)).each_with_index do |is_shift, i|
+                  - if i >= 8 && i <= 24
+                    - if is_shift
+                      %td.color_shift-data{data: {workrole: {id: is_shift}}}
+                    - else
+                      %td
+                  - else
+                    %td.hidden
+            %tr.shift-table__resource
+              %td.title{colspan: 17} 必要リソース
+            - @workroles.each do |wr|
+              %tr
+                %td= wr.name
+                - resources_count_to_ary(wr.required_resources.on_thisday(day)).each_with_index do |count, i|
+                  - if i >= 8 && i <= 24
+                    %td{data:{resource_type: "req", workrole: {id: wr.id}, time: i}}
+                      = count
+            %tr.shift-table__resource
+              %td.title{colspan: 17} 確定シフト
+            - @workroles.each do |wr|
+              %tr
+                %td= wr.name
+                - shifts_count_to_ary(wr.shifts.on_thisday(day)).each_with_index do |count, i|
+                  - if i >= 8 && i <= 24
+                    %td{data:{resource_type: "sum", workrole: {id: wr.id}, time: i}}
+                      = count

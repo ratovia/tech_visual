@@ -1,7 +1,7 @@
 %section.employee-shifts.shift-tables{data: {workrole: {ids: WorkRole.ids}}}
   %h1.page_title #{current_user.name}さんの今月のシフト
   %ul.workrole-example_lists
-    - WorkRole.all.each do |workrole|
+    - @workroles.all.each do |workrole|
       %li.color_shift-data{data: {workrole: {id: workrole.id}}}
         = workrole.name
   %table

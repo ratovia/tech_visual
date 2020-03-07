@@ -6,22 +6,17 @@ ActiveAdmin.register Shift do
   controller do
     def index
       redirect_to new_user_session_path and return unless user_signed_in?
-      first_day = DateTime.now.beginning_of_month
-      @days = []
-      DateTime.now.end_of_month.day.times do |day|
-        @days << first_day
-        first_day += 1.days
-      end
+      redirect_to shifts_path and return if current_user.admin?
+      @workroles = WorkRole.all
+      # @days = (Date.current.beginning_of_month..Date.current.end_of_month).to_a
+      @days = (Date.new(2020,2,1)..Date.new(2020,2,2)).to_a
+      @users = User.all
       super
     end
   end
 
   # views
   index do
-    if user_signed_in?.nil? || current_user.employee?
-      render partial: 'index'
-    else
-      render partial: 'admin_index'
-    end
+    render partial: 'index'
   end
 end
