@@ -44,7 +44,7 @@ $(function(){
       changeWorkRoleColer($(this));
     });
 
-    $(document).on('click', 'td.color_shift-data', function(){
+    $(document).on('click', 'td.js-update_genom', function(){
       // doneで操作するli要素を取得しておく
       const targetCell = $(this);
       const workroleId = this.dataset.workroleId;

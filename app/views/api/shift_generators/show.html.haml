@@ -28,7 +28,7 @@
               - shift[:array].each_with_index do |is_shift, shift_in_at|
                 - if shift_in_at >= 8 && shift_in_at <= 24
                   - if is_shift
-                    %td.color_shift-data{data: {workrole: {id: is_shift},genom_index: genom_index,shift_index: shift_index,shift_in_at: shift_in_at}}
+                    %td.color_shift-data.js-update_genom{data: {workrole: {id: is_shift},genom_index: genom_index,shift_index: shift_index,shift_in_at: shift_in_at}}
                   - else
                     %td
                 - else
