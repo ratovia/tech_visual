@@ -13,6 +13,10 @@ class Shift < ApplicationRecord
 
   class << self
 
+    def exist_on_thisday?(day)
+      where(shift_in_at: day.all_day).present?
+    end
+
     def find_user_shift(user, this_day, shifts = Shift.all)
       shifts.map do |shift|
         shift if user.id == shift[:user_id] && this_day.strftime('%Y/%m/%d') == shift[:shift_in_at].strftime('%Y/%m/%d')
