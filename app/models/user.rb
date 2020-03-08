@@ -16,4 +16,20 @@ class User < ApplicationRecord
   # validates
   validates :name, :role, presence: true
   validates :name, uniqueness: true
+
+  class << self
+    def build_user_genom(genom_params)
+      user = find(genom_params[:user_id])
+      shift_array = genom_params[:shift_array].map do |ele|
+        if ele == ''
+          nil
+        elsif WorkRole.ids.include?(ele.to_i)
+          ele.to_i
+        else
+          0
+        end
+      end
+      { user_id: user.id, user_name: user.name, array: shift_array }
+    end
+  end
 end

@@ -12,13 +12,13 @@ $(function(){
         if (index === 0){
           userId = ele.dataset.userId
         } else if (index < 7) {
-          shiftArray.push(0)
+          shiftArray.push(null)
         } else if (index === targetLi.data('shift-in-at') + 1) {
           console.log('変更点')
           console.log(ele)
           shiftArray.push(Number(ele.dataset.workroleId) + 1)
         } else {
-          shiftArray.push(ele.dataset.workroleId || 0)
+          shiftArray.push(ele.dataset.workroleId || null)
         }
       })
       console.log(userId)

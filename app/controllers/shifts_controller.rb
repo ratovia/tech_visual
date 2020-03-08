@@ -6,16 +6,17 @@ class ShiftsController < ApplicationController
     @workroles = WorkRole.all
     # @days = (Date.current.beginning_of_month..Date.current.end_of_month).to_a
     @days = (Date.new(2020,2,1)..Date.new(2020,2,1)).to_a
-    @users = User.all
+    @users = User.includes(:attendances, :shifts)
   end
 
   def update
-    binding.pry
+    user_genom = User.build_user_genom(user_genom_params)
+    p user_genom
   end
 
   private
 
-  def shift_params
-    params.permit(:day, :user_id, :shift_array)
+  def user_genom_params
+    params.permit(:day, :user_id, shift_array: [])
   end
 end
