@@ -24,8 +24,10 @@ $(function(){
       const workrole_id = Number(cell[0].dataset.workroleId);
       if (workrole_id === 0) {
         cell.removeAttr('style')
+        cell.addClass('no_workrole')
         return;
       }
+      cell.removeClass('no_workrole')
       const nth = $.inArray(workrole_id, workrole_ids);
       const color = color_array[nth];
       const styles = {
