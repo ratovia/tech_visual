@@ -1,26 +1,25 @@
 module ShiftsHelper
-  def shift_time_to_array(shift)
-    array = [false] * Settings.DATE_TIME
-    array.each_with_index do |_ary, i|
-      array[i] = shift[:work_role_id] if i >= str2hour(shift[:shift_in_at]) && i < str2hour(shift[:shift_out_at])
-    end
-    array
-  end
-
-  def str2hour(time)
-    Time.zone.parse(time.to_s).strftime("%H").to_i
-  end
-
-  def display_day_and_wday(day)
-    wd = ["日", "月", "火", "水", "木", "金", "土"]
-    day.strftime("%d日 (#{wd[day.wday]})")
-  end
-
-  def shifts_to_one_array(shifts)
+  # IN user, date
+  # [nil,nil,0,0,1,1,2,2,2,nil,nil]など
+  # その日のシフトを1つの配列にして、アサインしてる時間帯にはworkrole_idが入る
+  def shifts_to_one_array(user, day)
     array = [nil] * Settings.DATE_TIME
-    shifts.each do |shift|
-      shift_time_to_array(shift).each_with_index do |_ary, i|
-        array[i] ||= _ary
+    # 出勤してる時間を0で埋める
+    if user.attendances.on_thisday(day).present?
+      attendance_at = user.attendances.on_thisday(day).attendance_at
+      leaving_at    = user.attendances.on_thisday(day).leaving_at
+      array.each_with_index do |clock, index|
+        array[index] = 0 if index >= attendance_at && index < leaving_at
+      end
+    end
+    user_shifts = user.shifts.on_thisday(day)
+    # シフトのある時間にworkrole_idを入れる
+    if user_shifts
+      user_shifts.each do |shift|
+        shift_in  = shift.shift_in_at.hour
+        shift_out = shift.shift_out_at.hour
+        # 14-22時シフトなら、14~21にworkrole_idが入る
+        shift_in.upto(shift_out - 1) { |is_shift| array[is_shift] = shift.work_role_id }
       end
     end
     array
@@ -30,12 +29,37 @@ module ShiftsHelper
   def shifts_count_to_ary(shifts)
     ary = [0] * Settings.DATE_TIME
     shifts.each do |shift|
-      shift[:shift_out_at].hour = 24 if shift[:shift_out_at].hour.zero?
+      shift.shift_out_at.hour = 24 if shift.shift_out_at.hour.zero?
       # アサインされるべき時間で配列を作る
-      assign = [*shift[:shift_in_at].hour..shift[:shift_out_at].hour - 1]
+      assign = [*shift.shift_in_at.hour..shift.shift_out_at.hour - 1]
       # aryのindex＝時間帯の要素を+1する
       assign.each { |clock| ary[clock] += 1 }
     end
     ary
+  end
+
+  def shifts_list_item(user, day, is_shift, shift_in_at)
+    if shift_in_at < 8 # 8時より前
+      content_tag(:td, '', class: 'hidden')
+    else
+      if is_shift == nil # 出勤してない時
+        content_tag(:td)
+      elsif is_shift == 0 # 出勤してるがworkrole_idが0の時
+        content_tag(
+          :td,
+          '',
+          class: 'not_workrole js-update_shift',
+          'data-workrole-id': is_shift
+        )
+      else # 出勤しててworkrole_idが0以外の時
+        content_tag(
+          :td,
+          '',
+          class: 'color_shift-data js-update_shift',
+          'data-workrole-id': is_shift,
+          "shift-in-at": shift_in_at
+        )
+      end
+    end
   end
 end

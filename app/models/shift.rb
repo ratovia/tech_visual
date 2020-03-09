@@ -1,8 +1,6 @@
 class Shift < ApplicationRecord
   # scope
-  scope :on_thisday, ->(date_time) { where('shift_in_at >= ? and shift_in_at < ?',
-                                     date_time, date_time + 1 )
-                                   }
+  scope :on_thisday, ->(day) { where(shift_in_at: day.all_day) }
 
   # associations
   belongs_to :user
@@ -13,9 +11,6 @@ class Shift < ApplicationRecord
 
   class << self
 
-    def exist_on_thisday?(day)
-      where(shift_in_at: day.all_day).present?
-    end
 
     def find_user_shift(user, this_day, shifts = Shift.all)
       shifts.map do |shift|

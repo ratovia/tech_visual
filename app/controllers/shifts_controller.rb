@@ -6,7 +6,7 @@ class ShiftsController < ApplicationController
     @workroles = WorkRole.all
     # @days = (Date.current.beginning_of_month..Date.current.end_of_month).to_a
     @days = (Date.new(2020,2,1)..Date.new(2020,2,1)).to_a
-    @users = User.includes(:attendances, :shifts)
+    @users = User.where.not(role: :admin).includes(:attendances, :shifts)
   end
 
   def update

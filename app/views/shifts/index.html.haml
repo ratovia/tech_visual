@@ -23,34 +23,27 @@
               - else
                 %th.hidden
                   = d
-          - if Shift.exist_on_thisday?(day)
-            - @users.each do |user|
-              %tr
-                %td.user_name{data: {user: {id: user.id}}}
-                  = user.name
-                - shifts_to_one_array(user.shifts.on_thisday(day)).each_with_index do |is_shift, shift_in_at|
-                  - if shift_in_at >= 8 && shift_in_at <= 24
-                    - if is_shift
-                      %td.color_shift-data.js-update_shift{data: {"workrole-id": is_shift, "shift-in-at": shift_in_at} }
-                    - else
-                      %td
-                  - else
-                    %td.hidden
-            %tr.shift-table__resource
-              %td.title{colspan: 17} 必要リソース
-            - @workroles.each do |wr|
-              %tr
-                %td= wr.name
-                - resources_count_to_ary(wr.required_resources.on_thisday(day)).each_with_index do |count, i|
-                  - if i >= 8 && i <= 24
-                    %td{data:{resource_type: "req", workrole: {id: wr.id}, time: i}}
-                      = count
-            %tr.shift-table__resource
-              %td.title{colspan: 17} 確定シフト
-            - @workroles.each do |wr|
-              %tr
-                %td= wr.name
-                - shifts_count_to_ary(wr.shifts.on_thisday(day)).each_with_index do |count, i|
-                  - if i >= 8 && i <= 24
-                    %td{data:{resource_type: "sum", workrole: {id: wr.id}, time: i}}
-                      = count
+          - @users.each do |user|
+            %tr
+              %td.user_name{data: {user: {id: user.id}}}
+                = user.name
+              - shifts_to_one_array(user, day).each_with_index do |is_shift, shift_in_at|
+                = shifts_list_item(user, day, is_shift, shift_in_at)
+          %tr.shift-table__resource
+            %td.title{colspan: 17} 必要リソース
+          - @workroles.each do |wr|
+            %tr
+              %td= wr.name
+              - resources_count_to_ary(wr.required_resources.on_thisday(day)).each_with_index do |count, i|
+                - if i >= 8 && i <= 24
+                  %td{data:{resource_type: "req", workrole: {id: wr.id}, time: i}}
+                    = count
+          %tr.shift-table__resource
+            %td.title{colspan: 17} 確定シフト
+          - @workroles.each do |wr|
+            %tr
+              %td= wr.name
+              - shifts_count_to_ary(wr.shifts.on_thisday(day)).each_with_index do |count, i|
+                - if i >= 8 && i <= 24
+                  %td{data:{resource_type: "sum", workrole: {id: wr.id}, time: i}}
+                    = count
