@@ -19,4 +19,4 @@
         %td
           = day.strftime('%Y %m %d')
         - shifts_to_one_array(current_user, day).each_with_index do |is_shift, shift_in_at|
-          = user_shifts_td(user, day, is_shift, shift_in_at)
+          = user_shifts_td(current_user, day, is_shift, shift_in_at)
