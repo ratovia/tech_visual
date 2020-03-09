@@ -31,9 +31,10 @@ class Api::ShiftGeneratorsController < ApplicationController
     # 今のworkroleに+1したものが存在すれば+1したものを、無ければ0(アサイン無し)をafter_roleとする
     after_role = WorkRole.ids.include?(params[:workrole_id].to_i + 1) ? params[:workrole_id].to_i + 1 : 0
     # クリックされたgenomsを特定し、after_roleで更新する
+    # TODO genom_indexではなく日付で特定したい
     @@genoms[params[:genom_index].to_i][:shifts][params[:shift_index].to_i][:array][params[:shift_in_at].to_i] = after_role
     @genom_info = {
-      genom_index: params[:genom_index],
+      date: params[:day],
       shift_in_at: params[:shift_in_at],
       before_role: params[:workrole_id],
       after_role: after_role
