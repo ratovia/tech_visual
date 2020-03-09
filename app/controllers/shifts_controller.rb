@@ -11,7 +11,7 @@ class ShiftsController < ApplicationController
 
   def update
     user_genom = User.build_user_genom(user_genom_params)
-    p user_genom
+    shifts = Shift.build_from_user_genom(user_genom)
   end
 
   private
