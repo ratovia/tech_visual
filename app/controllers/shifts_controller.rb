@@ -11,7 +11,13 @@ class ShiftsController < ApplicationController
 
   def update
     user_genom = User.build_user_genom(user_genom_params)
-    shifts = Shift.build_from_user_genom(user_genom)
+    new_shifts = Shift.build_from_user_genom(user_genom_params[:day].to_date, user_genom)
+    old_shifts = User.find(user_genom_params[:user_id]).shifts.on_thisday(user_genom_params[:day].to_date)
+    ActiveRecord::Base.transaction do
+      old_shifts.map(&:destroy!)
+      new_shifts.map(&:save!)
+    end
+    render :update, format: :json
   end
 
   private

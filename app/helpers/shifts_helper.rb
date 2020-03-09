@@ -49,8 +49,9 @@ module ShiftsHelper
         content_tag(
           :td,
           '',
-          class: 'not_workrole js-update_shift',
-          'data-workrole-id': is_shift
+          class: 'no_workrole js-update_shift',
+          'data-workrole-id': is_shift,
+          'data-shift-in-at': shift_in_at
         )
       else # 出勤しててworkrole_idが0以外の時
         content_tag(
@@ -58,7 +59,7 @@ module ShiftsHelper
           '',
           class: 'color_shift-data js-update_shift',
           'data-workrole-id': is_shift,
-          "shift-in-at": shift_in_at
+          'data-shift-in-at': shift_in_at
         )
       end
     end

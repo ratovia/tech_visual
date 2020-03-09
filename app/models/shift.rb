@@ -10,13 +10,6 @@ class Shift < ApplicationRecord
   validates :shift_in_at, :shift_out_at, presence: true
 
   class << self
-
-    def find_user_shift(user, this_day, shifts = Shift.all)
-      shifts.map do |shift|
-        shift if user.id == shift[:user_id] && this_day.strftime('%Y/%m/%d') == shift[:shift_in_at].strftime('%Y/%m/%d')
-      end.compact!
-    end
-
     # genomsを受け取ってshiftインスタンスを生成する
     def build_from_genoms(genoms)
       # 返り値に使うShiftインスタンス格納用配列
