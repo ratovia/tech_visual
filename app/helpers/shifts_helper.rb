@@ -29,16 +29,17 @@ module ShiftsHelper
   def shifts_count_to_ary(shifts)
     ary = [0] * Settings.DATE_TIME
     shifts.each do |shift|
-      shift.shift_out_at.hour = 24 if shift.shift_out_at.hour.zero?
+      shift_out = shift.shift_out_at.hour == 0 ? 24 : shift.shift_out_at.hour
       # アサインされるべき時間で配列を作る
-      assign = [*shift.shift_in_at.hour..shift.shift_out_at.hour - 1]
+      assign = [*shift.shift_in_at.hour..shift_out - 1]
       # aryのindex＝時間帯の要素を+1する
       assign.each { |clock| ary[clock] += 1 }
     end
     ary
   end
 
-  def shifts_list_item(user, day, is_shift, shift_in_at)
+  # ユーザーごとのシフト1行(tdタグ*24)を作る
+  def user_shifts_td(user, day, is_shift, shift_in_at)
     if shift_in_at < 8 # 8時より前
       content_tag(:td, '', class: 'hidden')
     else
