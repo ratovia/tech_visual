@@ -8,7 +8,7 @@
         = workrole.name
   .shift-tables.shift-slick_container{data: {workrole: {ids: WorkRole.ids}}}
     - @genoms.each_with_index do |genom, genom_index|
-      .shift-table{data: {date: genom[:this_day].strftime("%Y/%m/%d")}}
+      .shift-table{data: {date: genom[:this_day].to_date}}
         %h1
           = genom[:this_day].strftime("%Y/%m/%d")
         %table
@@ -43,7 +43,7 @@
                 = req[:workrole][:name]
               - req[:array].each_with_index do |data,i|
                 - if i >= 8 && i <= 24
-                  %td{data:{resource_type: "req", workrole: {id: req[:workrole][:id]}, time: i, genom: {index: genom_index}}}
+                  %td{data:{resource_type: "req", 'workrole-id': req[:workrole][:id], time: i, date: genom[:this_day].to_date}}
                     = data
                 - else
                   %td.hidden{data:{resource_type: "req", workrole: {id: req[:workrole][:id]}, time: i}}
@@ -57,7 +57,7 @@
                 = sum[:workrole][:name]
               - sum[:array].each_with_index do |data,i|
                 - if i >= 8 && i <= 24
-                  %td{data:{resource_type: "sum", time: i, workrole: {id: sum[:workrole][:id]}, genom: {index: genom_index}}}
+                  %td{data:{resource_type: "sum", time: i, 'workrole-id': sum[:workrole][:id], date: genom[:this_day].to_date}}
                     = data
                 - else
                   %td.hidden{data:{resource_type: "sum", workrole: {id: sum[:workrole][:id]}, time: i}}

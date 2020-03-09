@@ -12,7 +12,7 @@
         = workrole.name
   .shift-tables.shift-slick_container{data: {workrole: {ids: @workroles.ids}}}
     - @days.each_with_index do |day|
-      .shift-table{data: {date: day.strftime("%Y/%m/%d")}}
+      .shift-table{data: {date: day}}
         %table
           %tr
             %th= day.strftime('%Y年 %m月 %d日')
@@ -36,7 +36,7 @@
               %td= wr.name
               - resources_count_to_ary(wr.required_resources.on_thisday(day)).each_with_index do |count, i|
                 - if i >= 8 && i <= 24
-                  %td{data:{resource_type: "req", workrole: {id: wr.id}, time: i}}
+                  %td{data:{resource_type: "req", 'workrole-id': wr.id, time: i, date: day}}
                     = count
           %tr.shift-table__resource
             %td.title{colspan: 17} 確定シフト
@@ -45,5 +45,5 @@
               %td= wr.name
               - shifts_count_to_ary(wr.shifts.on_thisday(day)).each_with_index do |count, i|
                 - if i >= 8 && i <= 24
-                  %td{data:{resource_type: "sum", workrole: {id: wr.id}, time: i}}
+                  %td{data:{resource_type: "sum", 'workrole-id': wr.id, time: i, date: day}}
                     = count

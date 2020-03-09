@@ -1,6 +1,6 @@
 %section.dashboard.shift-tables{data: {workrole: {ids: WorkRole.ids}}}
   %h1.page_title
-  %table.shift-table{data: {date: DateTime.now.strftime("%Y/%m/%d")}}
+  %table.shift-table{data: {date: @thisday.to_date}}
     %tr
       %th= @thisday.strftime('%Y年 %m月 %d日')
       - [*0..23].each do |d|
