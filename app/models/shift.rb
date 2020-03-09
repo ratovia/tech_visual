@@ -27,14 +27,14 @@ class Shift < ApplicationRecord
     def build_from_user_genom(date, user_genom)
       # 返り値用の配列
       user_shifts = []
-      # shiftsからuser_idを拾い、nilを除外する
+      # user_genomからuser_idを拾い、nilを除外する
       shift_info = { user_id: user_genom[:user_id] }
       user_genom[:array].each_with_index { |ele, i| shift_info[i] = ele if ele }
       # シフトイン時間算出用の変数
       hour = 0
       shift_info.each_with_object({}).each_with_index do |(obj), i|
-        # 0はuser_id, 1はuser_nameなのでスキップ
-        next if i < 2
+        # 0はuser_idなのでスキップ
+        next if i == 0
         if obj[1] == shift_info[obj[0]+1] # 今のworkroleと次のworkroleが一緒だったら
           hour += 1
         else # それ以外、つまりシフトイン時間が確定したら
