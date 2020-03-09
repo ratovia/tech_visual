@@ -6,11 +6,12 @@ ActiveAdmin.register Shift do
   controller do
     def index
       redirect_to new_user_session_path and return unless user_signed_in?
+      # シフト編集はshifts#index(active_admin管理外)で行うことにしました
       redirect_to shifts_path and return if current_user.admin?
       @workroles = WorkRole.all
+      # TODO 今月の初日〜末日の配列にする
       # @days = (Date.current.beginning_of_month..Date.current.end_of_month).to_a
-      @days = (Date.new(2020,2,1)..Date.new(2020,2,2)).to_a
-      @users = User.all
+      @days = (Date.new(2020,2,1)..Date.new(2020,2,29)).to_a
       super
     end
   end

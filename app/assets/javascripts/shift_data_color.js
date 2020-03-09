@@ -38,6 +38,8 @@ $(function(){
       cell.css(styles);
     }
 
+    // シフトクリック時のdoneで実行する関数
+    // クリックしたセルのworkrole更新＆色変え + 合計リソースの更新
     const updateShiftCell = (cell, genomInfo) => {
       cell[0].dataset.workroleId = genomInfo.after_role
       changeWorkRoleColer(cell)
@@ -100,6 +102,7 @@ $(function(){
       const day = $(this).parents().find('.shift-table').data('date')
       const newWorkRole = Number(targetCell[0].dataset.workroleId) + 1
       let userId
+      // user_genom[:shift]に当たるものを作る
       let shiftArray = []
       targetSiblings.each(function(index, ele){
         if (index === 0){
@@ -123,11 +126,11 @@ $(function(){
         dataType: 'json'
       })
       .done(function(genomInfo){
+        // シフト更新時はgenomInfoが空なのでここで作る
         genomInfo.date = day
         genomInfo.shift_in_at = targetCell[0].dataset.shiftInAt
         genomInfo.before_role = targetCell[0].dataset.workroleId
         genomInfo.after_role = workrole_ids.indexOf(newWorkRole) === -1 ? 0 : newWorkRole
-        console.log(genomInfo)
         updateShiftCell(targetCell, genomInfo)
       })
       .fail(function(res){

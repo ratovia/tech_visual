@@ -1,6 +1,6 @@
 module ShiftsHelper
-  # IN user, date
-  # [nil,nil,0,0,1,1,2,2,2,nil,nil]など
+  # IN: user, date
+  # OUT: [nil,nil,0,0,1,1,2,2,2,nil,nil]など
   # その日のシフトを1つの配列にして、アサインしてる時間帯にはworkrole_idが入る
   def shifts_to_one_array(user, day)
     array = [nil] * Settings.DATE_TIME
@@ -8,7 +8,7 @@ module ShiftsHelper
     if user.attendances.on_thisday(day).present?
       attendance_at = user.attendances.on_thisday(day).attendance_at
       leaving_at    = user.attendances.on_thisday(day).leaving_at
-      array.each_with_index do |clock, index|
+      array.each_with_index do |_, index|
         array[index] = 0 if index >= attendance_at && index < leaving_at
       end
     end

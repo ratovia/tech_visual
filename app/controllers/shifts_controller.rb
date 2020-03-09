@@ -1,8 +1,7 @@
 class ShiftsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :return_not_admin
 
   def index
-    redirect_to admin_shifts_path unless current_user.admin?
     @workroles = WorkRole.all
     # @days = (Date.current.beginning_of_month..Date.current.end_of_month).to_a
     @days = (Date.new(2020,2,1)..Date.new(2020,2,1)).to_a
@@ -24,5 +23,10 @@ class ShiftsController < ApplicationController
 
   def user_genom_params
     params.permit(:day, :user_id, shift_array: [])
+  end
+
+  def return_not_admin
+    authenticate_user!
+    redirect_to admin_shifts_path unless current_user.admin?
   end
 end
