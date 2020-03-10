@@ -65,7 +65,7 @@ class ShiftGenerator
     non_assign_count = 0.0
     return 1.0 unless @part_timers_id.include?(shift[:user_id])
     shift[:array].each_with_index do |ary, i|
-      next if ary.nil? || ary != 0
+      next if ary != 0
       # 今回の数字(アサインされたworkrole)が0(未アサイン)だったら1たす 
       non_assign_count += 1
     end
