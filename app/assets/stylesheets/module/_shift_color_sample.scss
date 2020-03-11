@@ -1,0 +1,12 @@
+@mixin shift_color_sample() {
+  .workrole-example_lists{
+    display: flex;
+    margin: 30px 0px;
+    justify-content: space-around;
+    width: 100%;
+    li{
+      padding: 10px;
+      color: white;
+    }
+  }
+}

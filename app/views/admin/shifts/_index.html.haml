@@ -1,20 +1,22 @@
-.table
-  = current_user.name
-  .date-axis
-    - (Settings.Attendance_time + 1).times do |num|
-      - if num == 0
-        .time-cell
-      - else
-        .time-cell
-          = num + 9
-          \:00
-  / ユーザーの仮置き
-  - Time.current.end_of_month.day.times do |num|
-    .name-axis
-      .cell
-        / 日付
-        = display_day_and_wday(Time.new(2019, 12, num+1))
-      .worktime
-        - Settings.Attendance_time.times do |attendance|
-          .worktime-cell
-
+%section.employee-shifts.shift-tables{data: {workrole: {ids: WorkRole.ids}}}
+  %h1.page_title #{current_user.name}さんの今月のシフト
+  %ul.workrole-example_lists
+    - @workroles.all.each do |workrole|
+      %li.color_shift-data{data: {workrole: {id: workrole.id}}}
+        = workrole.name
+  %table
+    %tr
+      %th
+      - [*0..23].each do |d|
+        - if d >= 8 && d <= 24
+          %th
+            = d
+        - else
+          %th.hidden
+            = d
+    - @days.each do |day|
+      %tr
+        %td
+          = day.strftime('%Y %m %d')
+        - shifts_to_one_array(current_user, day).each_with_index do |is_shift, shift_in_at|
+          = user_shifts_td(current_user, day, is_shift, shift_in_at)

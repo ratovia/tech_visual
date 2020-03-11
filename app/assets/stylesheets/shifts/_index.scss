@@ -1,0 +1,5 @@
+.admin-shifts {
+  @include shift_color_sample();
+
+  @include shift_table_style();
+}

@@ -12,19 +12,9 @@
 
 ### **●アソシエーション**
 - has_many :shifts
-- has_many :checkboxes
 - has_many :attendances
-
-## ◆Checkbox モデル
-
-### **●チェックボックス管理テーブル**
-シフト組に使用するチェックボックスの制約名、チェック有無を管理する
-
-| Column     | Type       | Options                        | memo        |
-| :--------- | :--------- | :----------------------------- | :---------- |
-| user       | references | null: false, foreign_key: true |             |
-| name       | string     | null: false                    |             |
-| checked    | boolean    |                          　　　 |             |
+- has_many :assignables
+- has_many :work_roles, through: :assignables
 
 ### **●アソシエーション**
 - belongs_to :user
@@ -41,6 +31,8 @@
 ### **●アソシエーション**
 - has_many :required_resources
 - has_many :shifts
+- has_many :assignables
+- has_many :users, through: :assignables
 
 ## ◆Shift モデル
 
@@ -87,3 +79,17 @@
 
 ### **●アソシエーション**
 - belongs_to :user
+
+## ◆Assignable モデル
+
+### **●アサイン可能ロール管理テーブル**
+各ユーザーがどのworkroleにアサイン可能かを管理する
+
+| Column        | Type       | Options                        | memo    |
+| :------------ | :--------- | :----------------------------- | :------ |
+| user          | references | null: false, foreign_key: true |         |
+| workrole      | references | null: false, foreign_key: true |         |
+
+### **●アソシエーション**
+- belongs_to :user
+- belongs_to :work_role

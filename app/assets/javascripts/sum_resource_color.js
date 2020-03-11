@@ -1,7 +1,7 @@
 $(function(){
   $(".shift-tables").ready(function(){
     const workrole_ids = $("[data-workrole-ids]").data("workrole-ids")
-    $("[data-date]").each(function(){
+    $('.shift-table').each(function(){
       let _this = this;
       workrole_ids.forEach(function(id){
         for(let num = 8;num < 24;num++){

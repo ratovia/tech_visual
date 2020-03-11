@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_07_122745) do
+ActiveRecord::Schema.define(version: 2020_03_02_001628) do
 
   create_table "active_admin_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "namespace"
@@ -26,6 +26,16 @@ ActiveRecord::Schema.define(version: 2019_12_07_122745) do
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
   end
 
+  create_table "assignables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "work_role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "work_role_id"], name: "index_assignables_on_user_id_and_work_role_id", unique: true
+    t.index ["user_id"], name: "index_assignables_on_user_id"
+    t.index ["work_role_id"], name: "index_assignables_on_work_role_id"
+  end
+
   create_table "attendances", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date", null: false
     t.integer "attendance_at", null: false
@@ -34,15 +44,6 @@ ActiveRecord::Schema.define(version: 2019_12_07_122745) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_attendances_on_user_id"
-  end
-
-  create_table "check_boxes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name", null: false
-    t.boolean "checked", default: false, null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_check_boxes_on_user_id"
   end
 
   create_table "required_resources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -88,8 +89,9 @@ ActiveRecord::Schema.define(version: 2019_12_07_122745) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "assignables", "users"
+  add_foreign_key "assignables", "work_roles"
   add_foreign_key "attendances", "users"
-  add_foreign_key "check_boxes", "users"
   add_foreign_key "required_resources", "work_roles"
   add_foreign_key "shifts", "users"
   add_foreign_key "shifts", "work_roles"
