@@ -9,13 +9,14 @@ class ShiftGeneticGenerator
   MAX_GENERATION = 30
 
   # 評価重み付け
-  SHIFTS_WEIGHT = 0.3
-  SUM_RESOURCE_WEIGHT = 0.7
+  SHIFTS_WEIGHT = 0.6
+  SUM_RESOURCE_WEIGHT = 0.4
 
   def initialize(users, workroles)
     @users = users
     @workroles = workroles
-    @assignable = @users.map { |user| {user_id: user.id, assignable_workroles: user.work_roles}}
+    @assignable = @users.map { |user| {user_id: user.id, assignable_workroles_ids: user.work_roles.ids}}
+    @part_timers_id = @users.map { |user| user.id if user.part_timer? }.compact
     @sg = ShiftGenerator.new(@users, @workroles)
   end
 
@@ -87,10 +88,10 @@ class ShiftGeneticGenerator
       genom[:shifts].each do |shift|
         user_assignable = @assignable.find { |as| as[:user_id] == shift[:user_id] } 
         # 遺伝子の要素各々をINDIVIDUAL_MUTATIONの確率でランダムに変化させる
-        shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? user_assignable[:assignable_workroles].sample&.id : x}
+        shift[:array].map! { |x| !x.nil? && rand(100) <= INDIVIDUAL_MUTATION * 100 ? user_assignable[:assignable_workroles_ids].sample : x}
         # 遺伝子自体をGENOM_MUTATIONの確率でランダムに変化させる
         if rand(100) <= GENOM_MUTATION * 100
-          shift[:array].map! { |x| user_assignable[:assignable_workroles].sample&.id if !x.nil?}
+          shift[:array].map! { |x| user_assignable[:assignable_workroles_ids].sample if !x.nil?}
         end
       end
     end
