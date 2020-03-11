@@ -119,7 +119,6 @@ class ShiftGenerator
       # 0 : 出勤しているが、シフトインしていない状態(workrole未割り当てな状態)
       attendance[:user_id] if attendance[:array][time] == 0  && @assignable.find { |as| as[:user_id] == attendance[:user_id]}[:assignable_workroles_ids].include?(workrole.id)
     end.compact
-    # assign_user
     assign_user.sample(req) # sampleメソッドは、配列からランダムで引数の数取り出す。
   end
 

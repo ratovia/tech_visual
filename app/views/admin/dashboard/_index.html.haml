@@ -1,6 +1,6 @@
 %section.dashboard.shift-tables{data: {workrole: {ids: WorkRole.ids}}}
   %h1.page_title
-  %table.shift-table{data: {date: DateTime.now.strftime("%Y/%m/%d")}}
+  %table.shift-table{data: {date: @thisday.to_date}}
     %tr
       %th= @thisday.strftime('%Y年 %m月 %d日')
       - [*0..23].each do |d|
@@ -14,14 +14,8 @@
       %tr
         %td
           = user.name
-        - shifts_to_one_array(user.shifts.on_thisday(@thisday)).each_with_index do |is_shift, i|
-          - if i >= 8 && i <= 24
-            - if is_shift
-              %td.color_shift-data{data: {workrole: {id: is_shift}}}
-            - else
-              %td
-          - else
-            %td.hidden
+        - shifts_to_one_array(user, @thisday).each_with_index do |is_shift, shift_in_at|
+          = user_shifts_td(user, @thisday, is_shift, shift_in_at)
     %tr.shift-table__resource
       %td.title{colspan: 17} 必要リソース
     - @work_roles.each do |wr|

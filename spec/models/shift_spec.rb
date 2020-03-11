@@ -16,6 +16,7 @@ RSpec.describe Shift, type: :model do
         this_day: DateTime.new(2020, 1, 1),
         shifts: [
           user_id: user.id,
+          user_name: user.name,
           array: [nil, nil, nil, nil, nil, nil, 3, 2, 2, 2, 1, 2, 4, 0, 1, 1, nil, nil, nil, nil, nil, nil, nil, nil]
         ]
       }]}
