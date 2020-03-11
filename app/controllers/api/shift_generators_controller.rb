@@ -4,7 +4,7 @@ class Api::ShiftGeneratorsController < ApplicationController
 
   def show
     if user_signed_in? && current_user.admin?
-      users = User.where(role: "employee").includes(:attendances)
+      users = User.includes(:attendances)
       @workroles = WorkRole.all
       sgg = ShiftGeneticGenerator.new(users, @workroles)
       @genoms = sgg.generate(period_params)
