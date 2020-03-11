@@ -9,6 +9,7 @@ class Shift < ApplicationRecord
   # validates
   validates :shift_in_at, :shift_out_at, presence: true
 
+
   class << self
     # genomsを受け取ってshiftインスタンスを生成する
     def build_from_genoms(genoms)
@@ -55,6 +56,5 @@ class Shift < ApplicationRecord
       end
       user_shifts
     end
-
   end
 end

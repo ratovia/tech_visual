@@ -64,4 +64,17 @@ module ShiftsHelper
       end
     end
   end
+
+  # Shiftsのインスタンス群を時間ごとのアサイン数に変換する
+  def shifts_count_to_ary(shifts)
+    ary = [0] * Settings.DATE_TIME
+    shifts.each do |shift|
+      shift[:shift_out_at].hour = 24 if shift[:shift_out_at].hour.zero?
+      # アサインされるべき時間で配列を作る
+      assign = [*shift[:shift_in_at].hour..shift[:shift_out_at].hour - 1]
+      # aryのindex＝時間帯の要素を+1する
+      assign.each { |clock| ary[clock] += 1 }
+    end
+    ary
+  end
 end
